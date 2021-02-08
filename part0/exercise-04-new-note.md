@@ -1,0 +1,7 @@
+# Exercise 0.4 - New Note
+
+My diagram showing the browser/server interactions when a user submits a new note is as follow:
+
+![sequence diagram](../resources/New%20Note.png).
+
+Additionally, the diagram can be viewed on [websequencediagrams](https://www.websequencediagrams.com/?lz=dGl0bGUgTmV3IE5vdGUKCgphY3RvciB1c2VyCgp1c2VyLT5Ccm93c2VyOiBzdWJtaXRzIG5ldyBub3RlCgATBy0-U2VydmVyOiBIVFRQIFBPU1QgaHR0cHM6Ly9zdHVkaWVzLmNzLmhlbHNpbmtpLmZpL2V4YW1wbGVhcHAvbmV3XwBJBW5vdGUgb3ZlciAARwh1cGRhdGVzIGRhdGEuanNvbiB3aXRoAHYKAHEGAIEXCzMwMiBzdGF0dXMgY29kZSAtIHJlZGlyZWN0IHRvIABpDW90ZXMAgSoXR0UAgRMtAEUFAHoRSFRNTACBAAUAgU0LAIJBCVJlY29nbml6ZXMgbGluayB0byBzdHlsZXNoZWV0IGluADkFAFRKL21haW4uY3MAgRQTABEJAIEIHnNjcmlwdCBzcmMARlhqAIEFGGoAgQcVRXhlY3V0ZXMgSmF2YQCBGAYAgWVLAIRoCQCEURIAEQoAehxldmVudCBoYW5kbGVyIGluAIEcCwCFTwcgbGlzdACFQg4gZnJvbSBKU09O&s=default).
