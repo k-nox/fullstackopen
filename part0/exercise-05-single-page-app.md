@@ -1,0 +1,7 @@
+# Exercise 05 - Single Page App
+
+My diagram showing what happens when the user goes to the single page app is as follows:
+
+![Sequence Diagram](resources/../../resources/SinglePageApp.png)
+
+Additionally, the diagram can be viewed on [websequencediagram](https://www.websequencediagrams.com/?lz=dGl0bGUgU2luZ2xlIFBhZ2UgQXBwCgphY3RvciBVc2VyClVzZXItPkJyb3dzZXI6IGNsaWNrcyBsaW5rIHRvIGh0dHBzOi8vc3R1ZGllcy5jcy5oZWxzaW5raS5maS9leGFtcGxlYXBwL3NwYQoAPwctPlNlcnZlcjogSFRUUCBHRVQAGS8AOQYAgQsLSFRNTCBjb2RlCm5vdGUgb3ZlciAAgSoJUGFyc2VzAB4GYW5kIG5vdGljZQCBOgpjc3MgZmlsZQBXSC9tYWluLmNzcwCBFhIAEQkAgRQTY29udGludWVzIHBhcnNpbmcAgSASSlMgc2NyaXB0IHNvdXJjAGNPagCBGRhqAIEbFWJlZ2lucyBqYXZhAIEOB2V4ZWN1dGlvbiAmAIJcCWNhbGwgZm9yIEpTT04AghlJZGF0YS5qc29uAIN5EgARCgCDeBNmaW5pc2hlcyBKAIEiFHdpdGgAOwUgZnJvbQA_CwCFLwlVAIV_BURpc3BsYXlzAIVQLg&s=default).

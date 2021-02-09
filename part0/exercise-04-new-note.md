@@ -1,6 +1,6 @@
 # Exercise 0.4 - New Note
 
-My diagram showing the browser/server interactions when a user submits a new note is as follow:
+My diagram showing the browser/server interactions when a user submits a new note is as follows:
 
 ![sequence diagram](../resources/New%20Note.png).
 
