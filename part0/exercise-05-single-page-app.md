@@ -1,4 +1,4 @@
-# Exercise 05 - Single Page App
+# Exercise 0.5 - Single Page App
 
 My diagram showing what happens when the user goes to the single page app is as follows:
 
