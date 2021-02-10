@@ -26,11 +26,10 @@ const StatsHeader = () => (
 );
 
 const Statistic = ({ label, stat }) => (
-  <>
-    <p>
-      {label}: {stat}
-    </p>
-  </>
+  <tr>
+    <td>{label}</td>
+    <td>{stat}</td>
+  </tr>
 );
 
 const Statistics = ({ good, neutral, bad }) => {
@@ -42,12 +41,16 @@ const Statistics = ({ good, neutral, bad }) => {
     return (
       <section>
         <StatsHeader />
-        <Statistic label="good" stat={good} />
-        <Statistic label="neutral" stat={neutral} />
-        <Statistic label="bad" stat={bad} />
-        <Statistic label="total feedback" stat={totalFeedback} />
-        <Statistic label="average feedback" stat={averageFeedback} />
-        <Statistic label="percentage of good feedback" stat={goodPercentage} />
+        <table>
+          <tbody>
+            <Statistic label="good" stat={good} />
+            <Statistic label="neutral" stat={neutral} />
+            <Statistic label="bad" stat={bad} />
+            <Statistic label="total feedback" stat={totalFeedback} />
+            <Statistic label="average feedback" stat={averageFeedback} />
+            <Statistic label="percentage of good feedback" stat={goodPercentage} />
+          </tbody>
+        </table>
       </section>
     );
   }
