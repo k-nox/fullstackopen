@@ -16,10 +16,10 @@ const StatsHeader = () => (
   </>
 );
 
-const Stats = ({ label, rating }) => (
+const Stats = ({ label, stat }) => (
   <>
     <p>
-      {label}: {rating}
+      {label}: {stat}
     </p>
   </>
 );
@@ -28,6 +28,11 @@ const App = () => {
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
+
+  const totalFeedback = good + neutral + bad;
+  const averageFeedback = totalFeedback > 0 ? (good - bad) / totalFeedback : 0;
+  const goodPercentage =
+    totalFeedback > 0 ? `${((good / totalFeedback) * 100).toString(10)}%` : '0%';
 
   return (
     <div>
@@ -39,9 +44,12 @@ const App = () => {
       </section>
       <section>
         <StatsHeader />
-        <Stats label="good" rating={good} />
-        <Stats label="neutral" rating={neutral} />
-        <Stats label="bad" rating={bad} />
+        <Stats label="good" stat={good} />
+        <Stats label="neutral" stat={neutral} />
+        <Stats label="bad" stat={bad} />
+        <Stats label="total feedback" stat={totalFeedback} />
+        <Stats label="average feedback" stat={averageFeedback} />
+        <Stats label="percentage of good feedback" stat={goodPercentage} />
       </section>
     </div>
   );
