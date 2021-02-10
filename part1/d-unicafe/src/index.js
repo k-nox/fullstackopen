@@ -10,13 +10,22 @@ const Header = () => (
 
 const Button = ({ handleClick, label }) => <button onClick={handleClick}>{label}</button>;
 
+const Buttons = ({ handleGoodClick, handleNeutralClick, handleBadClick }) => (
+  <section>
+    <Header />
+    <Button handleClick={handleGoodClick} label={'good'} />
+    <Button handleClick={handleNeutralClick} label={'neutral'} />
+    <Button handleClick={handleBadClick} label={'bad'} />
+  </section>
+);
+
 const StatsHeader = () => (
   <>
     <h1>Statistics:</h1>
   </>
 );
 
-const Stats = ({ label, stat }) => (
+const Statistic = ({ label, stat }) => (
   <>
     <p>
       {label}: {stat}
@@ -33,12 +42,12 @@ const Statistics = ({ good, neutral, bad }) => {
     return (
       <section>
         <StatsHeader />
-        <Stats label="good" stat={good} />
-        <Stats label="neutral" stat={neutral} />
-        <Stats label="bad" stat={bad} />
-        <Stats label="total feedback" stat={totalFeedback} />
-        <Stats label="average feedback" stat={averageFeedback} />
-        <Stats label="percentage of good feedback" stat={goodPercentage} />
+        <Statistic label="good" stat={good} />
+        <Statistic label="neutral" stat={neutral} />
+        <Statistic label="bad" stat={bad} />
+        <Statistic label="total feedback" stat={totalFeedback} />
+        <Statistic label="average feedback" stat={averageFeedback} />
+        <Statistic label="percentage of good feedback" stat={goodPercentage} />
       </section>
     );
   }
@@ -57,12 +66,11 @@ const App = () => {
 
   return (
     <div>
-      <section>
-        <Header />
-        <Button handleClick={() => setGood(good + 1)} label="good" />
-        <Button handleClick={() => setNeutral(neutral + 1)} label="neutral" />
-        <Button handleClick={() => setBad(bad + 1)} label="bad" />
-      </section>
+      <Buttons
+        handleGoodClick={() => setGood(good + 1)}
+        handleNeutralClick={() => setNeutral(neutral + 1)}
+        handleBadClick={() => setBad(bad + 1)}
+      />
       <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
   );
