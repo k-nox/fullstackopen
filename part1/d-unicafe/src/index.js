@@ -26,19 +26,26 @@ const Stats = ({ label, stat }) => (
 
 const Statistics = ({ good, neutral, bad }) => {
   const totalFeedback = good + neutral + bad;
-  const averageFeedback = totalFeedback > 0 ? (good - bad) / totalFeedback : 0;
-  const goodPercentage =
-    totalFeedback > 0 ? `${((good / totalFeedback) * 100).toString(10)}%` : '0%';
+  if (totalFeedback > 0) {
+    const averageFeedback = (good - bad) / totalFeedback;
+    const goodPercentage = `${((good / totalFeedback) * 100).toString(10)}%`;
 
+    return (
+      <section>
+        <StatsHeader />
+        <Stats label="good" stat={good} />
+        <Stats label="neutral" stat={neutral} />
+        <Stats label="bad" stat={bad} />
+        <Stats label="total feedback" stat={totalFeedback} />
+        <Stats label="average feedback" stat={averageFeedback} />
+        <Stats label="percentage of good feedback" stat={goodPercentage} />
+      </section>
+    );
+  }
   return (
     <section>
       <StatsHeader />
-      <Stats label="good" stat={good} />
-      <Stats label="neutral" stat={neutral} />
-      <Stats label="bad" stat={bad} />
-      <Stats label="total feedback" stat={totalFeedback} />
-      <Stats label="average feedback" stat={averageFeedback} />
-      <Stats label="percentage of good feedback" stat={goodPercentage} />
+      <p>No feedback given</p>
     </section>
   );
 };
