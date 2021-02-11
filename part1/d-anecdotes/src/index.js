@@ -2,9 +2,26 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-const Button = ({ handleClick, label }) => {
-  return <button onClick={handleClick}>{label}</button>;
-};
+const Button = ({ handleClick, label }) => (
+  <>
+    <button onClick={handleClick}>{label}</button>
+  </>
+);
+
+const Buttons = ({ handleNextClick, handleVoteClick }) => (
+  <>
+    <Button handleClick={handleVoteClick} label="Vote" />
+    <Button handleClick={handleNextClick} label="Random Anecdore" />
+  </>
+);
+
+const Section = ({ anecdote, votes, header }) => (
+  <section>
+    <h1>{header}</h1>
+    <p>{anecdote}</p>
+    <p>has {votes} votes</p>
+  </section>
+);
 
 const App = props => {
   const [selected, setSelected] = useState(0);
@@ -24,10 +41,17 @@ const App = props => {
 
   return (
     <div>
-      <p>{props.anecdotes[selected]}</p>
-      <p>has {points[selected]} votes</p>
-      <Button handleClick={handleVoteClick} label="Vote" />
-      <Button handleClick={handleNextClick} label="Random Anecdote" />
+      <Section
+        anecdote={props.anecdotes[selected]}
+        votes={points[selected]}
+        header="Anecdote of the day"
+      />
+      <Buttons handleVoteClick={handleVoteClick} handleNextClick={handleNextClick} />
+      <Section
+        anecdote={props.anecdotes[points.indexOf(Math.max(...points))]}
+        votes={Math.max(...points)}
+        header="Anecdote with the most points"
+      />
     </div>
   );
 };
