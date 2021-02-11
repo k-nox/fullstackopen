@@ -2,22 +2,32 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-const Button = ({ handleClick }) => {
-  return <button onClick={handleClick}>random anecdote</button>;
+const Button = ({ handleClick, label }) => {
+  return <button onClick={handleClick}>{label}</button>;
 };
 
 const App = props => {
   const [selected, setSelected] = useState(0);
+  const [points, setPoints] = useState(Array(anecdotes.length).fill(0));
 
-  const handleClick = () => {
-    const index = Math.floor(Math.random() * Math.floor(anecdotes.length));
-    setSelected(index);
+  const handleNextClick = () => {
+    setSelected(Math.floor(Math.random() * Math.floor(anecdotes.length)));
+  };
+
+  const handleVoteClick = () => {
+    setPoints(() => {
+      const copy = [...points];
+      copy[selected] += 1;
+      return copy;
+    });
   };
 
   return (
     <div>
       <p>{props.anecdotes[selected]}</p>
-      <Button handleClick={handleClick} />
+      <p>has {points[selected]} votes</p>
+      <Button handleClick={handleVoteClick} label="Vote" />
+      <Button handleClick={handleNextClick} label="Random Anecdote" />
     </div>
   );
 };
