@@ -16,15 +16,17 @@ const Content = ({ course }) => (
   </div>
 );
 
-/* const Total = ({ course }) => {
-  const sum = course.parts[0].exercises + course.parts[1].exercises + course.parts[2].exercises;
-  return <p>Number of exercises {sum}</p>;
-}; */
+const Total = ({ course }) => (
+  <p key={course.parts.id}>
+    total of {course.parts.reduce((sum, part) => (sum += part.exercises), 0)} exercises
+  </p>
+);
 
 const Course = ({ course }) => (
   <div>
     <Header course={course} />
     <Content course={course} />
+    <Total course={course} />
   </div>
 );
 
