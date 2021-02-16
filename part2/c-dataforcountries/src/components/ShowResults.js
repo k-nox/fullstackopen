@@ -2,7 +2,7 @@ import React from 'react';
 import ResultsList from './ResultsList';
 import SingleResult from './SingleResult';
 
-const ShowResults = ({ results, search }) => {
+const ShowResults = ({ results, search, handleClick }) => {
   switch (true) {
     case !search:
       return null;
@@ -13,7 +13,7 @@ const ShowResults = ({ results, search }) => {
     case results.length > 10:
       return <p>Too many results, please narrow down your search</p>;
     default:
-      return <ResultsList results={results} />;
+      return <ResultsList results={results} handleClick={handleClick} />;
   }
 };
 

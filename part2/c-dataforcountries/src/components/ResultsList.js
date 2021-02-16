@@ -1,10 +1,15 @@
 import React from 'react';
 
-const ResultsList = ({ results }) => {
+const ResultsList = ({ results, handleClick }) => {
   return (
     <ul>
       {results.map((result) => (
-        <li key={result.name}>{result.name}</li>
+        <li key={result.name}>
+          {result.name}
+          <button id={result.name} type="button" onClick={handleClick}>
+            show
+          </button>
+        </li>
       ))}
     </ul>
   );

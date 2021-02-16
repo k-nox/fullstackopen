@@ -23,6 +23,10 @@ const App = () => {
     setSearch(e.target.value);
   };
 
+  const handleClick = (e) => {
+    setSearch(e.target.id);
+  };
+
   return (
     <div>
       <h1>country search</h1>
@@ -34,7 +38,7 @@ const App = () => {
         onChange={handleChange}
         placeholder="country name"
       />
-      {search ? <ShowResults results={filteredResults} search={search} /> : null}
+      {<ShowResults results={filteredResults} search={search} handleClick={handleClick} />}
     </div>
   );
 };
