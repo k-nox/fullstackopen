@@ -4,7 +4,7 @@ const ResultsList = ({ results, handleClick }) => {
   return (
     <ul>
       {results.map((result) => (
-        <li key={result.name}>
+        <li key={result.alpha2Code}>
           {result.name}
           <button id={result.name} type="button" onClick={handleClick}>
             show
