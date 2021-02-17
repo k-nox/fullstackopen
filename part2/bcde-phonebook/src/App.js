@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Filter from './components/Filter';
 import AddPersonForm from './components/AddPersonForm';
 import Person from './components/Person';
-import axios from 'axios';
+import personServices from './services/persons';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,8 +11,8 @@ const App = () => {
   const [newPerson, setNewPerson] = useState({ name: '', number: '' });
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then((response) => {
-      setPersons(response.data);
+    personServices.getAll().then((initialPersons) => {
+      setPersons(initialPersons);
     });
   }, []);
 
@@ -23,8 +23,8 @@ const App = () => {
       if (persons.some((person) => person.name === newPerson.name)) {
         alert(`${newPerson.name} is already added to the phonebook`);
       } else {
-        axios.post('http://localhost:3001/persons', newPerson).then((response) => {
-          setPersons(persons.concat(response.data));
+        personServices.create(newPerson).then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson));
           setNewPerson({ name: '', number: '' });
         });
       }
@@ -55,7 +55,7 @@ const App = () => {
       <AddPersonForm addPerson={addPerson} newPerson={newPerson} handleChange={handleChange} />
       <h2>Numbers</h2>
       {personsToShow.map((person) => (
-        <Person name={person.name} number={person.number} key={person.name} />
+        <Person name={person.name} number={person.number} key={person.id} />
       ))}
     </div>
   );
