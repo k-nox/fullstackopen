@@ -33,6 +33,21 @@ const App = () => {
     }
   };
 
+  const removePerson = (e) => {
+    const personToDelete = persons.find((person) => person.id === +e.target.id);
+    const confirmToDelete = window.confirm(`Delete ${personToDelete.name}?`);
+
+    if (confirmToDelete) {
+      personServices
+        .remove(personToDelete.id)
+        .then(() => setPersons(persons.filter((person) => person.id !== personToDelete.id)))
+        .catch((error) => {
+          alert(`${personToDelete.name} has already been deleted from the server`);
+          setPersons(persons.filter((person) => person.id !== personToDelete.id));
+        });
+    }
+  };
+
   const handleChange = (e) => {
     e.target.getAttribute('id') === 'name'
       ? setNewPerson({ ...newPerson, name: e.target.value })
@@ -55,7 +70,7 @@ const App = () => {
       <AddPersonForm addPerson={addPerson} newPerson={newPerson} handleChange={handleChange} />
       <h2>Numbers</h2>
       {personsToShow.map((person) => (
-        <Person name={person.name} number={person.number} key={person.id} />
+        <Person person={person} key={person.id} handleClick={removePerson} />
       ))}
     </div>
   );
