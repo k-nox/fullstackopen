@@ -19,12 +19,14 @@ const App = () => {
   const addPerson = (e) => {
     e.preventDefault();
 
-    if (newPerson.name !== '' && newPerson.number !== '') {
+    if (newPerson.name && newPerson.number) {
       if (persons.some((person) => person.name === newPerson.name)) {
         alert(`${newPerson.name} is already added to the phonebook`);
       } else {
-        setPersons(persons.concat(newPerson));
-        setNewPerson({ name: '', number: '' });
+        axios.post('http://localhost:3001/persons', newPerson).then((response) => {
+          setPersons(persons.concat(response.data));
+          setNewPerson({ name: '', number: '' });
+        });
       }
     } else {
       alert('Please make sure to enter both a name and a number');
