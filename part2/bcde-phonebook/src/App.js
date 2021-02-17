@@ -21,7 +21,13 @@ const App = () => {
 
     if (newPerson.name && newPerson.number) {
       if (persons.some((person) => person.name === newPerson.name)) {
-        alert(`${newPerson.name} is already added to the phonebook`);
+        const confirmToUpdate = window.confirm(
+          `${newPerson.name} is already in the phonebook. Do you want to replace their previous number with a new one?`
+        );
+
+        if (confirmToUpdate) {
+          updatePerson(newPerson);
+        }
       } else {
         personServices.create(newPerson).then((returnedPerson) => {
           setPersons(persons.concat(returnedPerson));
@@ -31,6 +37,22 @@ const App = () => {
     } else {
       alert('Please make sure to enter both a name and a number');
     }
+  };
+
+  const updatePerson = (newPerson) => {
+    const personToUpdate = persons.find((person) => person.name === newPerson.name);
+    const changedPerson = { ...personToUpdate, number: newPerson.number };
+    personServices
+      .update(changedPerson, changedPerson.id)
+      .then((returnedPerson) => {
+        setPersons(
+          persons.map((person) => (person.id !== changedPerson.id ? person : returnedPerson))
+        );
+      })
+      .catch((error) => {
+        alert(`${changedPerson.name} was already deleted from the server`);
+        setPersons(persons.filter((person) => person.id !== changedPerson.id));
+      });
   };
 
   const removePerson = (e) => {
@@ -65,10 +87,10 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
       <Filter search={search} handleSearch={handleSearch} />
       <AddPersonForm addPerson={addPerson} newPerson={newPerson} handleChange={handleChange} />
-      <h2>Numbers</h2>
+      <h2>contacts</h2>
       {personsToShow.map((person) => (
         <Person person={person} key={person.id} handleClick={removePerson} />
       ))}

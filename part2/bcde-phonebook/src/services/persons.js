@@ -12,7 +12,12 @@ const create = (newObject) => {
   return request.then((response) => response.data);
 };
 
+const update = (newObject, id) => {
+  const request = axios.put(`${baseUrl}/${id}`, newObject);
+  return request.then((response) => response.data);
+};
+
 const remove = (id) => axios.delete(`${baseUrl}/${id}`);
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { getAll, create, remove };
+export default { getAll, create, remove, update };
