@@ -14,6 +14,19 @@ const App = () => {
     noteService.getAll().then((initialNotes) => setNotes(initialNotes));
   }, []);
 
+  const addNote = (e) => {
+    e.preventDefault();
+    const noteObject = {
+      content: newNote,
+      important: Math.random() > 0.5,
+    };
+
+    noteService.create(noteObject).then((returnedNote) => {
+      setNotes(notes.concat(returnedNote));
+      setNewNote('');
+    });
+  };
+
   const toggleImportanceOf = (id) => {
     const note = notes.find((n) => n.id === id);
     const changedNote = { ...note, important: !note.important };
@@ -28,22 +41,7 @@ const App = () => {
         setTimeout(() => {
           setErrorMesssage(null);
         }, 5000);
-        setNotes(notes.filter((n) => n.id !== id));
       });
-  };
-
-  const addNote = (e) => {
-    e.preventDefault();
-    const noteObject = {
-      content: newNote,
-      date: new Date().toISOString(),
-      important: Math.random() < 0.5,
-    };
-
-    noteService.create(noteObject).then((returnedNote) => {
-      setNotes(notes.concat(returnedNote));
-      setNewNote('');
-    });
   };
 
   const handleNoteChange = (e) => {
