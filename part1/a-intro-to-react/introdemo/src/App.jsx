@@ -1,23 +1,22 @@
 const Hello = props => {
   return (
-    <div>
-      <p>
-        Hello {props.name}, you are {props.age} years old
-      </p>
-    </div>
+    <p>
+      Hello {props.name}, you are {props.age} years old
+    </p>
   )
 }
 
 const App = () => {
-  const name = 'Biscuit'
-  const age = 2
+  const cats = [
+    { name: 'Maggie', age: 3 },
+    { name: 'Biscuit', age: 2 },
+    { name: 'Tiny', age: 1 },
+  ]
   return (
-    <div>
+    <>
       <h1>Greetings</h1>
-      <Hello name='Maggie' age={1 + 2}/>
-      <Hello name={name} age={age}/>
-      <Hello name='Tiny' age={1}/>
-    </div>
+      {cats.map((cat, index) => <Hello name={cat.name} age={cat.age} key={index} />)}
+    </>
   )
 }
 export default App
