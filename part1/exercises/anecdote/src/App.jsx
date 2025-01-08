@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Anecdote from './Anecdote'
 
 const App = () => {
   const anecdotes = [
@@ -25,12 +26,17 @@ const App = () => {
     setVotes(votesCopy)
   }
 
+  const mostVotes = votes.reduce((max, value, i, arr) => value > arr[max] ? i : max, 0)
+  
+
   return (
     <div>
-      <p>{anecdotes[selected]}</p>
-      <p>has {votes[selected]} votes</p>
+      <h1>Anecdote of the day</h1>
+      <Anecdote anecdote={anecdotes[selected]} voteCount={votes[selected]} />
       <button onClick={handleNextClick}>next anectdote</button>
       <button onClick={handleVoteClick}>vote</button>
+      <h1>Anecdote with the most votes</h1>
+      <Anecdote anecdote={anecdotes[mostVotes]} voteCount={votes[mostVotes]} />
     </div>
   )
 }
