@@ -6,13 +6,17 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setPersons([
-      ...persons,
-      {
-        name: newName,
-      },
-    ]);
-    setNewName('');
+    if (persons.some((person) => person.name === newName)) {
+      alert(`${newName} is already added to phonebook`);
+    } else {
+      setPersons([
+        ...persons,
+        {
+          name: newName,
+        },
+      ]);
+      setNewName('');
+    }
   };
 
   const names = persons.map((person) => (
