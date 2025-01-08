@@ -1,4 +1,4 @@
-import Statistic from './Statistic'
+import StatisticLine from './StatisticLine'
 
 const Statistics = ({good, bad, neutral}) => {
     if (good === 0 && bad === 0 && neutral === 0) {
@@ -11,12 +11,12 @@ const Statistics = ({good, bad, neutral}) => {
     const percentagePositive = good / all * 100
     return (
         <>
-            <Statistic label='good' value={good} />
-            <Statistic label='neutral' value={neutral} />
-            <Statistic label='bad' value={bad} />
-            <Statistic label='all' value={all} />
-            <Statistic label='average' value={average} />
-            <Statistic label='positive' value={`${percentagePositive}%`} />
+            <StatisticLine label='good' value={good} />
+            <StatisticLine label='neutral' value={neutral} />
+            <StatisticLine label='bad' value={bad} />
+            <StatisticLine label='all' value={all} />
+            <StatisticLine label='average' value={average} />
+            <StatisticLine label='positive' value={`${percentagePositive}%`} />
         </>
   )
 }
