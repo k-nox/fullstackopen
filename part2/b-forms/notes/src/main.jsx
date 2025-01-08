@@ -22,6 +22,6 @@ const notes = [
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App notes={notes} />
+    <App initialNotes={notes} />
   </StrictMode>,
 );
