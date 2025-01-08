@@ -8,25 +8,18 @@ function App() {
   const [allClicks, setAllClicks] = useState([])
   const [total, setTotal] = useState(0)
 
-  const handleLeftClick = () => {
-    setAllClicks(allClicks.concat('L'))
-    const updatedLeft = left + 1
-    setLeft(updatedLeft)
-    setTotal(updatedLeft + right)
-  }
-
-  const handleRightClick = () => {
-    setAllClicks(allClicks.concat('R'))
-    const updatedRight = right + 1
-    setRight(updatedRight)
-    setTotal(left + updatedRight)
+  const handleClick = (value, setValue, otherValue, label) => () => {
+    setAllClicks(allClicks.concat(label))
+    const updatedValue = value + 1
+    setValue(updatedValue)
+    setTotal(updatedValue + otherValue)
   }
 
   return (
     <div>
       {left}
-      <Button handleClick={handleLeftClick} text='left'/>
-      <Button handleClick={handleRightClick} text='right'/>
+      <Button handleClick={handleClick(left, setLeft, right, 'L')} text='left'/>
+      <Button handleClick={handleClick(right, setRight, left, 'R')} text='right'/>
       {right}
       <History allClicks={allClicks} />
       <p>total {total}</p>
