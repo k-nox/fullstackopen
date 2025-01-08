@@ -1,6 +1,6 @@
-const Statistic = ({label, count}) => {
+const Statistic = ({label, value}) => {
   return (
-    <p>{label} {count}</p>
+    <p>{label} {value}</p>
   )
 }
 export default Statistic
