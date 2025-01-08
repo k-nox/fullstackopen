@@ -1,6 +1,11 @@
 import Statistic from './Statistic'
 
 const Statistics = ({good, bad, neutral}) => {
+    if (good === 0 && bad === 0 && neutral === 0) {
+        return (
+            <p>No feedback given</p>
+        )
+    }
     const all = good + bad + neutral
     const average = (good - bad) / all
     const percentagePositive = good / all * 100
