@@ -10,14 +10,16 @@ const Statistics = ({good, bad, neutral}) => {
     const average = (good - bad) / all
     const percentagePositive = good / all * 100
     return (
-        <>
-            <StatisticLine label='good' value={good} />
-            <StatisticLine label='neutral' value={neutral} />
-            <StatisticLine label='bad' value={bad} />
-            <StatisticLine label='all' value={all} />
-            <StatisticLine label='average' value={average} />
-            <StatisticLine label='positive' value={`${percentagePositive}%`} />
-        </>
+        <table>
+            <tbody>
+                <StatisticLine label='good' value={good} />
+                <StatisticLine label='neutral' value={neutral} />
+                <StatisticLine label='bad' value={bad} />
+                <StatisticLine label='all' value={all} />
+                <StatisticLine label='average' value={average} />
+                <StatisticLine label='positive' value={`${percentagePositive}%`} />
+            </tbody>
+        </table>
   )
 }
 export default Statistics
