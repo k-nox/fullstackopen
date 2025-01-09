@@ -1,5 +1,5 @@
 import Person from './Person';
-const Persons = ({ persons, nameFilter }) => {
+const Persons = ({ persons, nameFilter, handleDelete }) => {
   const filteredPersons =
     nameFilter === ''
       ? persons
@@ -8,7 +8,7 @@ const Persons = ({ persons, nameFilter }) => {
         );
 
   const names = filteredPersons.map((person) => (
-    <Person key={person.name} person={person} />
+    <Person key={person.name} person={person} handleClick={handleDelete} />
   ));
 
   return <ul>{names}</ul>;
