@@ -19,14 +19,15 @@ const App = () => {
 
   const addNote = (event) => {
     event.preventDefault();
-    setNotes(
-      notes.concat({
-        content: newNote,
-        important: Math.random() < 0.5,
-        id: notes.length + 1,
-      }),
-    );
-    setNewNote('');
+    const noteObject = {
+      content: newNote,
+      important: Math.random() < 0.5,
+    };
+
+    axios.post('http://localhost:3001/notes', noteObject).then((response) => {
+      setNotes([...notes, noteObject]);
+      setNewNote('');
+    });
   };
 
   const handleNoteChange = (event) => {
