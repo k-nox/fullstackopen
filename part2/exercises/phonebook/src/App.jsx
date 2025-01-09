@@ -14,21 +14,51 @@ const App = () => {
     personService.getAll().then((initialPersons) => setPersons(initialPersons));
   }, []);
 
+  const existingPerson = () => {
+    return persons.find((person) => person.name === newName);
+  };
+
+  const shouldUpdate = (person) => {
+    return confirm(
+      `${newName} is already added to the phonebook with existing number ${person.number}, would you like to replace it with ${newNumber}?`,
+    );
+  };
+
+  const updateNumber = (person) => {
+    personService
+      .update(person.id, {
+        ...person,
+        number: newNumber,
+      })
+      .then((updatedPerson) => {
+        setPersons(
+          persons.map((p) => (p.id === updatedPerson.id ? updatedPerson : p)),
+        );
+        setNewName('');
+        setNewNumber('');
+      });
+  };
+
+  const createPerson = () => {
+    personService
+      .create({
+        name: newName,
+        number: newNumber,
+      })
+      .then((newPerson) => {
+        setPersons(persons.concat(newPerson));
+        setNewName('');
+        setNewNumber('');
+      });
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
-    } else {
-      personService
-        .create({
-          name: newName,
-          number: newNumber,
-        })
-        .then((newPerson) => {
-          setPersons(persons.concat(newPerson));
-          setNewName('');
-          setNewNumber('');
-        });
+    const existing = existingPerson();
+    if (existing === undefined) {
+      createPerson();
+    } else if (shouldUpdate(existing)) {
+      updateNumber(existing);
     }
   };
 

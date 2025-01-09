@@ -8,7 +8,7 @@ const Persons = ({ persons, nameFilter, handleDelete }) => {
         );
 
   const names = filteredPersons.map((person) => (
-    <Person key={person.name} person={person} handleClick={handleDelete} />
+    <Person key={person.id} person={person} handleClick={handleDelete} />
   ));
 
   return <ul>{names}</ul>;
