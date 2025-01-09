@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import NameFilter from './components/NameFilter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
+import Notification from './components/Notification.jsx';
 import personService from './services/persons.js';
 
 const App = () => {
@@ -9,6 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [nameFilter, setNameFilter] = useState('');
+  const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => setPersons(initialPersons));
@@ -36,6 +38,10 @@ const App = () => {
         );
         setNewName('');
         setNewNumber('');
+        setSuccessMessage(
+          `Updated ${updatedPerson.name}'s number to ${updatedPerson.number}`,
+        );
+        setTimeout(() => setSuccessMessage(null), 5000);
       });
   };
 
@@ -49,6 +55,8 @@ const App = () => {
         setPersons(persons.concat(newPerson));
         setNewName('');
         setNewNumber('');
+        setSuccessMessage(`Added ${newPerson.name}`);
+        setTimeout(() => setSuccessMessage(null), 5000);
       });
   };
 
@@ -63,16 +71,17 @@ const App = () => {
   };
 
   const handleDelete = (id) => {
-    personService
-      .del(id)
-      .then((deletedPerson) =>
-        setPersons(persons.filter((p) => p.id !== deletedPerson.id)),
-      );
+    personService.del(id).then((deletedPerson) => {
+      setPersons(persons.filter((p) => p.id !== deletedPerson.id));
+      setSuccessMessage(`Deleted ${deletedPerson.name}`);
+      setTimeout(() => setSuccessMessage(null), 5000);
+    });
   };
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={successMessage} type={'success'} />
       <NameFilter
         value={nameFilter}
         handleChange={(event) => setNameFilter(event.target.value)}
