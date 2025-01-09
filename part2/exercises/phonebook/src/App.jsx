@@ -11,6 +11,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('');
   const [nameFilter, setNameFilter] = useState('');
   const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => setPersons(initialPersons));
@@ -36,12 +37,21 @@ const App = () => {
         setPersons(
           persons.map((p) => (p.id === updatedPerson.id ? updatedPerson : p)),
         );
-        setNewName('');
-        setNewNumber('');
         setSuccessMessage(
           `Updated ${updatedPerson.name}'s number to ${updatedPerson.number}`,
         );
         setTimeout(() => setSuccessMessage(null), 5000);
+        setNewName('');
+        setNewNumber('');
+      })
+      .catch((error) => {
+        setPersons(persons.filter((p) => p.id !== person.id));
+        setErrorMessage(
+          `Information of ${person.name} has already been removed from server`,
+        );
+        setTimeout(() => setErrorMessage(null), 5000);
+        setNewName('');
+        setNewNumber('');
       });
   };
 
@@ -53,10 +63,10 @@ const App = () => {
       })
       .then((newPerson) => {
         setPersons(persons.concat(newPerson));
-        setNewName('');
-        setNewNumber('');
         setSuccessMessage(`Added ${newPerson.name}`);
         setTimeout(() => setSuccessMessage(null), 5000);
+        setNewName('');
+        setNewNumber('');
       });
   };
 
@@ -71,17 +81,25 @@ const App = () => {
   };
 
   const handleDelete = (id) => {
-    personService.del(id).then((deletedPerson) => {
-      setPersons(persons.filter((p) => p.id !== deletedPerson.id));
-      setSuccessMessage(`Deleted ${deletedPerson.name}`);
-      setTimeout(() => setSuccessMessage(null), 5000);
-    });
+    personService
+      .del(id)
+      .then((deletedPerson) => {
+        setPersons(persons.filter((p) => p.id !== deletedPerson.id));
+        setSuccessMessage(`Deleted ${deletedPerson.name}`);
+        setTimeout(() => setSuccessMessage(null), 5000);
+      })
+      .catch((error) => {
+        setPersons(persons.filter((p) => p.id !== id));
+        setErrorMessage(`This person has already been removed from server`);
+        setTimeout(() => setErrorMessage(null), 5000);
+      });
   };
 
   return (
     <div>
       <h2>Phonebook</h2>
       <Notification message={successMessage} type={'success'} />
+      <Notification message={errorMessage} type={'error'} />
       <NameFilter
         value={nameFilter}
         handleChange={(event) => setNameFilter(event.target.value)}
