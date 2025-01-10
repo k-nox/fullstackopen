@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import Search from './components/search';
-import Display from './components/display';
+import List from './components/list';
+import Match from './components/match';
 import axios from 'axios';
 
 const App = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [countries, setCountries] = useState([]);
   const [matches, setMatches] = useState([]);
+  const [selected, setSelected] = useState(null);
 
   useEffect(() => {
     axios
@@ -16,19 +18,30 @@ const App = () => {
 
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
-    setMatches(
-      countries.filter((country) =>
-        country.name.common
-          .toLowerCase()
-          .includes(event.target.value.toLowerCase()),
-      ),
+    const newMatches = countries.filter((country) =>
+      country.name.common
+        .toLowerCase()
+        .includes(event.target.value.toLowerCase()),
     );
+    setMatches(newMatches);
+    if (newMatches.length === 1) {
+      setSelected(newMatches[0]);
+    } else {
+      setSelected(null);
+    }
+  };
+
+  const handleClick = (country) => {
+    setSelected(country);
   };
 
   return (
     <div>
       <Search value={searchTerm} handleChange={handleChange} />
-      {searchTerm === '' ? null : <Display matches={matches} />}
+      {searchTerm !== '' && selected === null ? (
+        <List matches={matches} handleClick={handleClick} />
+      ) : null}
+      {selected !== null ? <Match country={selected} /> : null}
     </div>
   );
 };
