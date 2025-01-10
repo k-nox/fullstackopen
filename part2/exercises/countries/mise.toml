@@ -1,0 +1,5 @@
+[env]
+_.file = '.env.json'
+
+[tools]
+node = '22.12.0'

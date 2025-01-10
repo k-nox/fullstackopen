@@ -2,19 +2,30 @@ import { useState, useEffect } from 'react';
 import Search from './components/search';
 import List from './components/list';
 import Match from './components/match';
-import axios from 'axios';
+import countryService from './services/countries';
+import weatherService from './services/weather.js';
 
 const App = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [countries, setCountries] = useState([]);
   const [matches, setMatches] = useState([]);
   const [selected, setSelected] = useState(null);
+  const [weather, setWeather] = useState(null);
 
   useEffect(() => {
-    axios
-      .get('https://studies.cs.helsinki.fi/restcountries/api/all')
-      .then((response) => setCountries(response.data));
+    countryService.getAll().then((countries) => setCountries(countries));
   }, []);
+
+  const selectCountry = (country) => {
+    setSelected(country);
+    if (country === null) {
+      setWeather(null);
+    } else if (country !== selected) {
+      weatherService
+        .weather(country.capital[0], country.cca2)
+        .then((weather) => setWeather(weather));
+    }
+  };
 
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
@@ -25,14 +36,14 @@ const App = () => {
     );
     setMatches(newMatches);
     if (newMatches.length === 1) {
-      setSelected(newMatches[0]);
+      selectCountry(newMatches[0]);
     } else {
-      setSelected(null);
+      selectCountry(null);
     }
   };
 
   const handleClick = (country) => {
-    setSelected(country);
+    selectCountry(country);
   };
 
   return (
@@ -41,7 +52,9 @@ const App = () => {
       {searchTerm !== '' && selected === null ? (
         <List matches={matches} handleClick={handleClick} />
       ) : null}
-      {selected !== null ? <Match country={selected} /> : null}
+      {selected !== null ? (
+        <Match country={selected} weather={weather} />
+      ) : null}
     </div>
   );
 };
