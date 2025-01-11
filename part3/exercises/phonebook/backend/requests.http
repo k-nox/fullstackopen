@@ -1,23 +1,25 @@
 @id=3
+# @baseUrl=http://localhost:3001
+@baseUrl=https://fullstackopen-backend-phonebook-maggie.fly.dev
 
 # Get info
-GET http://localhost:3001/info
+GET {{baseUrl}}/info
 
 ###
 # Get all persons
-GET http://localhost:3001/api/persons
+GET {{baseUrl}}/api/persons
 
 ###
 # Get person by id
-GET http://localhost:3001/api/persons/{{id}}
+GET {{baseUrl}}/api/persons/{{id}}
 
 ###
 # Delete person by id
-DELETE http://localhost:3001/api/persons/{{id}}
+DELETE {{baseUrl}}/api/persons/{{id}}
 
 ###
 # Create a new person
-POST http://localhost:3001/api/persons
+POST {{baseUrl}}/api/persons
 Content-Type: application/json
 
 {

@@ -12,6 +12,7 @@
   "author": "Lux Barker",
   "license": "MIT",
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.6.1",
     "nodemon": "^3.1.9",
     "prettier": "3.4.2"
   },
