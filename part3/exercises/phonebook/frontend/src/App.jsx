@@ -83,9 +83,17 @@ const App = () => {
   const handleDelete = (id) => {
     personService
       .del(id)
-      .then((deletedPerson) => {
-        setPersons(persons.filter((p) => p.id !== deletedPerson.id));
-        setSuccessMessage(`Deleted ${deletedPerson.name}`);
+      .then(() => {
+        let name = '';
+        setPersons(
+          persons.filter((p) => {
+            if (p.id === id) {
+              name = p.name;
+            }
+            return p.id !== id;
+          }),
+        );
+        setSuccessMessage(`Deleted ${name}`);
         setTimeout(() => setSuccessMessage(null), 5000);
       })
       .catch((error) => {
