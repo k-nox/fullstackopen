@@ -80,45 +80,20 @@ app.delete('/api/persons/:id', (request, response) => {
   response.status(201).send();
 });
 
-const generateId = () => {
-  const min = Math.ceil(10);
-  const max = Math.floor(10000);
-  return Math.floor(Math.random() * (max - min) + min);
-};
-
 app.post('/api/persons', (request, response) => {
   const body = request.body;
-  if (!body) {
+  if (!body || !body.name || !body.number) {
     return response
       .status(400)
-      .json({ error: 'must provide person in json body' });
+      .json({ error: 'must provide both name and number' });
   }
 
-  if (!body.name) {
-    return response.status(422).json({ error: 'must provide name' });
-  }
+  const person = new Person({
+    name: body.name,
+    number: body.number,
+  });
 
-  if (!body.number) {
-    return response.status(422).json({ error: 'must provide number' });
-  }
-
-  if (persons.some((p) => p.name === body.name)) {
-    return response.status(422).json({ error: 'name must be unique' });
-  }
-
-  const person = {
-    name: request.body.name,
-    number: request.body.number,
-    id: String(generateId()),
-  };
-
-  // hacky way to guarantee a new id for now
-  while (persons.some((p) => p.id === person.id)) {
-    person.id = String(generateId());
-  }
-
-  persons = persons.concat(person);
-  response.json(person);
+  person.save().then((savedPerson) => response.json(savedPerson));
 });
 
 const PORT = process.env.PORT || 3001;
