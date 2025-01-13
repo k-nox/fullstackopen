@@ -1,0 +1,36 @@
+@baseUrl=http://localhost:3001
+@id=67845e707300d00e768e75e1
+# Get index
+GET {{baseUrl}}/
+
+###
+# Get all notes
+GET {{baseUrl}}/api/notes
+
+###
+# Get one note
+GET {{baseUrl}}/api/notes/{{id}}
+
+###
+# Delete one note
+DELETE {{baseUrl}}/api/notes/{{id}}
+
+###
+# Create one note
+POST {{baseUrl}}/api/notes
+Content-Type: application/json
+
+{
+	"content": "This is a note",
+	"important": true
+}
+
+###
+# Update one note
+PUT {{baseUrl}}/api/notes/{{id}}
+Content-Type: application/json
+
+{
+	"content": "This is a note",
+	"important": false
+}
