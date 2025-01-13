@@ -4,8 +4,6 @@ mongoose.set("strictQuery", false);
 
 const url = process.env.MONGODB_URI_DEV;
 
-console.log(url);
-
 mongoose
   .connect(url)
   .then((result) => {
