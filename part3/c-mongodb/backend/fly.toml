@@ -6,7 +6,8 @@
 app = 'fullstackopen-backend-phonebook-biscuit'
 primary_region = 'sea'
 
-[build]
+[build.args]
+NODE_ENV = "production"
 
 [env]
 PORT = "3000"

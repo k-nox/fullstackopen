@@ -2,7 +2,10 @@ import mongoose from "mongoose";
 
 mongoose.set("strictQuery", false);
 
-const url = process.env.MONGODB_URI_DEV;
+const url =
+  process.env.NODE_ENV === "development"
+    ? process.env.MONGODB_URI_DEV
+    : process.env.MONGODB_URI;
 
 mongoose
   .connect(url)
