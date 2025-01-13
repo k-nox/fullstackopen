@@ -1,26 +1,6 @@
 import express from "express";
 import cors from "cors";
-import mongoose from "mongoose";
-
-const url = process.env.MONGODB_URI_DEV;
-
-mongoose.set("strictQuery", false);
-mongoose.connect(url);
-
-const noteSchema = new mongoose.Schema({
-  content: String,
-  important: Boolean,
-});
-
-noteSchema.set("toJSON", {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString();
-    delete returnedObject._id;
-    delete returnedObject.__v;
-  },
-});
-
-const Note = mongoose.model("Note", noteSchema);
+import Note from "./models/note.js";
 
 const app = express();
 
@@ -63,13 +43,9 @@ app.get("/api/notes", (request, response) => {
 });
 
 app.get("/api/notes/:id", (request, response) => {
-  const id = request.params.id;
-  const note = notes.find((note) => note.id === id);
-  if (note) {
+  Note.findById(request.params.id).then((note) => {
     response.json(note);
-  } else {
-    response.status(404).end();
-  }
+  });
 });
 
 app.delete("/api/notes/:id", (request, response) => {
@@ -78,13 +54,6 @@ app.delete("/api/notes/:id", (request, response) => {
 
   response.status(204).end();
 });
-
-const generateId = () => {
-  const maxId =
-    notes.length > 0 ? Math.max(...notes.map((n) => Number(n.id))) : 0;
-
-  return String(maxId + 1);
-};
 
 app.post("/api/notes", (request, response) => {
   const body = request.body;
@@ -95,15 +64,14 @@ app.post("/api/notes", (request, response) => {
     });
   }
 
-  const note = {
+  const note = new Note({
     content: body.content,
-    important: Boolean(body.important) || false,
-    id: generateId(),
-  };
+    important: body.important || false,
+  });
 
-  notes = notes.concat(note);
-
-  response.json(note);
+  note.save().then((savedNote) => {
+    response.json(savedNote);
+  });
 });
 
 const unknownEndpoint = (request, response) => {
@@ -112,7 +80,7 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint);
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
