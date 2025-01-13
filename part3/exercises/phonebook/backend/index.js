@@ -60,8 +60,10 @@ app.get('/info', (request, response) => {
   response.send(message);
 });
 
-app.get('/api/persons', (request, response) => {
-  Person.find({}).then((persons) => response.json(persons));
+app.get('/api/persons', (request, response, next) => {
+  Person.find({})
+    .then((persons) => response.json(persons))
+    .catch((error) => next(error));
 });
 
 app.get('/api/persons/:id', (request, response) => {
@@ -74,13 +76,13 @@ app.get('/api/persons/:id', (request, response) => {
   }
 });
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
     .then(() => response.status(204).send())
-    .catch((error) => response.status(400).send({ error: 'malformed id' }));
+    .catch((error) => next(error));
 });
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body;
   if (!body || !body.name || !body.number) {
     return response
@@ -93,7 +95,18 @@ app.post('/api/persons', (request, response) => {
     number: body.number,
   });
 
-  person.save().then((savedPerson) => response.json(savedPerson));
+  person
+    .save()
+    .then((savedPerson) => response.json(savedPerson))
+    .catch((error) => next(error));
+});
+
+app.use((error, request, response, next) => {
+  console.error(error.message);
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformed id' });
+  }
+  next(error);
 });
 
 const PORT = process.env.PORT || 3001;
