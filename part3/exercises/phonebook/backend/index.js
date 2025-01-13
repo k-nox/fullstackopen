@@ -53,11 +53,15 @@ let persons = [
   },
 ];
 
-app.get('/info', (request, response) => {
+app.get('/info', (request, response, next) => {
   const timestamp = new Date();
-  const label = persons.length > 1 ? 'people' : 'person';
-  const message = `<p>Phonebook has info for ${persons.length} ${label}</p><p>${timestamp}</p>`;
-  response.send(message);
+  Person.countDocuments({})
+    .then((count) => {
+      const label = count > 1 ? 'people' : 'person';
+      const message = `<p>Phonebook has info for ${count} ${label}</p><p>${timestamp}</p>`;
+      response.send(message);
+    })
+    .catch((error) => next(error));
 });
 
 app.get('/api/persons', (request, response, next) => {
@@ -66,14 +70,16 @@ app.get('/api/persons', (request, response, next) => {
     .catch((error) => next(error));
 });
 
-app.get('/api/persons/:id', (request, response) => {
-  const id = request.params.id;
-  const person = persons.find((p) => p.id === id);
-  if (person) {
-    response.json(person);
-  } else {
-    response.status(404).send();
-  }
+app.get('/api/persons/:id', (request, response, next) => {
+  Person.findById(request.params.id)
+    .then((person) => {
+      if (person) {
+        response.json(person);
+      } else {
+        response.status(404).send();
+      }
+    })
+    .catch((error) => next(error));
 });
 
 app.delete('/api/persons/:id', (request, response, next) => {
