@@ -9,7 +9,8 @@ primary_region = 'sea'
 [env]
 PORT = '3000'
 
-[build]
+[build.args]
+NODE_ENV = 'production'
 
 [http_service]
 internal_port = 3000

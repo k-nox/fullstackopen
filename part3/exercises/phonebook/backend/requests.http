@@ -1,6 +1,6 @@
-@id=3
 @baseUrl=http://localhost:3001
 # @baseUrl=https://fullstackopen-backend-phonebook-maggie.fly.dev
+@id=67840ae8c3fa8520b7fb2c37
 
 # Get info
 GET {{baseUrl}}/info
