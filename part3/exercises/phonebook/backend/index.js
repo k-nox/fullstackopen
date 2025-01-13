@@ -101,6 +101,23 @@ app.post('/api/persons', (request, response, next) => {
     .catch((error) => next(error));
 });
 
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body;
+  if (!body || !body.name || !body.number) {
+    return response
+      .status(400)
+      .json({ error: 'must provide both name and number' });
+  }
+
+  Person.findByIdAndUpdate(
+    request.params.id,
+    { name: body.name, number: body.number },
+    { new: true },
+  )
+    .then((updatedPerson) => response.json(updatedPerson))
+    .catch((error) => next(error));
+});
+
 app.use((error, request, response, next) => {
   console.error(error.message);
   if (error.name === 'CastError') {

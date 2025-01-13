@@ -1,6 +1,6 @@
 @baseUrl=http://localhost:3001
 # @baseUrl=https://fullstackopen-backend-phonebook-maggie.fly.dev
-@id=67840ae8c3fa8520b7fb2c37
+@id=67856f0020d2c1d9df83b63c
 
 # Get info
 GET {{baseUrl}}/info
@@ -25,4 +25,14 @@ Content-Type: application/json
 {
 	"name": "Maggie",
 	"number": "123-123-1234"
+}
+
+###
+# Update a person
+PUT {{baseUrl}}/api/persons/{{id}}
+Content-Type: application/json
+
+{
+	"name": "Maggie",
+	"number": "123-456-7890"
 }
