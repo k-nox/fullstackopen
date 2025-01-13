@@ -1,23 +1,23 @@
+@baseUrl=http://localhost:3001
+@id=6783fa20745a534820ec4247
 # Get index
-GET http://localhost:3001/
+GET {{baseUrl}}/
 
 ###
 # Get all notes
-GET http://localhost:3001/api/notes
+GET {{baseUrl}}/api/notes
 
 ###
 # Get one note
-@id=1
-GET http://localhost:3001/api/notes/{{id}}
+GET {{baseUrl}}/api/notes/{{id}}
 
 ###
 # Delete one note
-@id=4
-DELETE http://localhost:3001/api/notes/{{id}}
+DELETE {{baseUrl}}/api/notes/{{id}}
 
 ###
 # Create one note
-POST http://localhost:3001/api/notes
+POST {{baseUrl}}/api/notes
 Content-Type: application/json
 
 {
