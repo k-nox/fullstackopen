@@ -11,3 +11,16 @@ export const favoriteBlog = (blogs) => {
 		return max && max.likes > blog.likes ? max : blog
 	}, null)
 }
+
+export const mostBlogs = (blogs) => {
+	const counts = {}
+	blogs.forEach(({ author }) => {
+		counts[author] = counts[author] ? counts[author] + 1 : 1
+	})
+
+	return Object.keys(counts).reduce((maxAuthor, currAuthor) => {
+		return maxAuthor && counts[maxAuthor.author] > counts[currAuthor]
+			? maxAuthor
+			: { author: currAuthor, blogs: counts[currAuthor] }
+	}, null)
+}
