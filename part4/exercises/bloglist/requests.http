@@ -9,8 +9,8 @@ POST {{baseURL}}/api/blogs
 Content-Type: application/json
 
 {
-	"title": "Knox's Cool Blog",
+	"title": "Knox's Cool Blog 4: This is the Final Countdown",
 	"author": "Knox",
-	"url": "http://knox.example.com",
+	"url": "http://knox-also-also-also.example.com",
 	"likes": 1
 }
