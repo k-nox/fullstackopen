@@ -4,8 +4,7 @@ const blogSchema = new Schema({
 	title: String,
 	author: String,
 	url: String,
-	likes: Number
+	likes: Number,
 })
 
 export const Blog = model('Blog', blogSchema)
-

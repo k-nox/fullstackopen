@@ -19,4 +19,3 @@ export const logMiddleware = morgan((tokens, request, response) => {
 	}
 	return t.join(' ')
 })
-

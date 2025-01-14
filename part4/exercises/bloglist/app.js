@@ -1,12 +1,11 @@
-import express, { json } from 'express'
 import cors from 'cors'
-import { config } from './utils/config.js'
+import express, { json } from 'express'
 import { connect } from 'mongoose'
-import { logMiddleware } from './utils/middleware.js'
 import { blogRouter } from './controllers/blogs.js'
+import { config } from './utils/config.js'
+import { logMiddleware } from './utils/middleware.js'
 
 export const app = express()
-
 
 connect(config.MONGODB_URI)
 
