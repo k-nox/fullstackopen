@@ -6,27 +6,27 @@ import config from './utils/config.js'
 import logger from './utils/logger.js'
 import middleware from './utils/middleware.js'
 
-const app = express()
+export const app = (mongoURI) => {
+	const a = express()
+	mongoose.set('strictQuery', false)
+	logger.info('connecting to', config.MONGODB_URI)
+	mongoose
+		.connect(mongoURI)
+		.then(() => {
+			logger.info('conneced to MongoDB')
+		})
+		.catch((error) => {
+			logger.error('error connecting to MongoDB:', error.message)
+		})
 
-mongoose.set('strictQuery', false)
-logger.info('connecting to', config.MONGODB_URI)
-mongoose
-	.connect(config.MONGODB_URI)
-	.then(() => {
-		logger.info('conneced to MongoDB')
-	})
-	.catch((error) => {
-		logger.error('error connecting to MongoDB:', error.message)
-	})
+	a.use(cors())
+	a.use(express.static('dist'))
+	a.use(express.json())
+	a.use(middleware.requestLogger)
 
-app.use(cors())
-app.use(express.static('dist'))
-app.use(express.json())
-app.use(middleware.requestLogger)
+	a.use('/api/notes', notesRouter)
 
-app.use('/api/notes', notesRouter)
-
-app.use(middleware.unknownEndpoint)
-app.use(middleware.errorHandler)
-
-export default app
+	a.use(middleware.unknownEndpoint)
+	a.use(middleware.errorHandler)
+	return a
+}
