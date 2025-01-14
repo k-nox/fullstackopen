@@ -108,17 +108,12 @@ app.post('/api/persons', (request, response, next) => {
 });
 
 app.put('/api/persons/:id', (request, response, next) => {
-  const body = request.body;
-  if (!body || !body.name || !body.number) {
-    return response
-      .status(400)
-      .json({ error: 'must provide both name and number' });
-  }
+  const { name, number } = request.body;
 
   Person.findByIdAndUpdate(
     request.params.id,
-    { name: body.name, number: body.number },
-    { new: true },
+    { name, number },
+    { new: true, runValidators: true },
   )
     .then((updatedPerson) => response.json(updatedPerson))
     .catch((error) => next(error));
