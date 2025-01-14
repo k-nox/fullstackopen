@@ -46,19 +46,21 @@ notesRouter.delete('/:id', async (request, response, next) => {
 	}
 })
 
-notesRouter.put('/:id', (request, response, next) => {
+notesRouter.put('/:id', async (request, response, next) => {
 	const { content, important } = request.body
 
 	const note = { content, important }
 
-	Note.findByIdAndUpdate(request.params.id, note, {
-		new: true,
-		runValidators: true,
-	})
-		.then((updatedNote) => {
-			response.json(updatedNote)
+	try {
+		const updatedNote = await Note.findByIdAndUpdate(request.params.id, note, {
+			new: true,
+			runValidators: true,
 		})
-		.catch((error) => next(error))
+
+		response.json(updatedNote)
+	} catch (exception) {
+		next(exception)
+	}
 })
 
 export default notesRouter
