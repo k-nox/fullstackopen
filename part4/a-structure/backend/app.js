@@ -1,16 +1,17 @@
-import config from './utils/config.js'
-import express from 'express'
 import cors from 'cors'
-import notesRouter from './controllers/notes.js'
-import middleware from './utils/middleware.js'
-import logger from './utils/logger.js'
+import express from 'express'
 import mongoose from 'mongoose'
+import notesRouter from './controllers/notes.js'
+import config from './utils/config.js'
+import logger from './utils/logger.js'
+import middleware from './utils/middleware.js'
 
 const app = express()
 
 mongoose.set('strictQuery', false)
 logger.info('connecting to', config.MONGODB_URI)
-mongoose.connect(config.MONGODB_URI)
+mongoose
+	.connect(config.MONGODB_URI)
 	.then(() => {
 		logger.info('conneced to MongoDB')
 	})

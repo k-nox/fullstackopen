@@ -1,5 +1,5 @@
-import test from 'node:test'
 import assert from 'node:assert'
+import test from 'node:test'
 
 import { reverse } from '../utils/for_testing.js'
 

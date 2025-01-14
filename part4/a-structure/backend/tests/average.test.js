@@ -1,6 +1,6 @@
-import { test, describe } from 'node:test'
-import { average } from '../utils/for_testing.js'
 import assert from 'node:assert'
+import { describe, test } from 'node:test'
+import { average } from '../utils/for_testing.js'
 
 describe('average', () => {
 	test('of one value is the value itself', () => {

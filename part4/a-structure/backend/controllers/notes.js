@@ -3,25 +3,22 @@ import Note from '../models/note.js'
 
 const notesRouter = Router()
 
-notesRouter.get('/', (request, response) => {
-	Note
-		.find({})
-		.then(notes => {
-			response.json(notes)
-		})
+notesRouter.get('/', (_request, response) => {
+	Note.find({}).then((notes) => {
+		response.json(notes)
+	})
 })
 
 notesRouter.get('/:id', (request, response, next) => {
-	Note
-		.findById(request.params.id)
-		.then(note => {
+	Note.findById(request.params.id)
+		.then((note) => {
 			if (note) {
 				response.json(note)
 			} else {
 				response.status(404).end()
 			}
 		})
-		.catch(error => next(error))
+		.catch((error) => next(error))
 })
 
 notesRouter.post('/', (request, response, next) => {
@@ -33,19 +30,18 @@ notesRouter.post('/', (request, response, next) => {
 
 	note
 		.save()
-		.then(savedNote => {
+		.then((savedNote) => {
 			response.json(savedNote)
 		})
-		.catch(error => next(error))
+		.catch((error) => next(error))
 })
 
 notesRouter.delete('/:id', (request, response, next) => {
-	Note
-		.findByIdAndDelete(request.params.id)
+	Note.findByIdAndDelete(request.params.id)
 		.then(() => {
 			response.status(204).end()
 		})
-		.catch(error => next(error))
+		.catch((error) => next(error))
 })
 
 notesRouter.put('/:id', (request, response, next) => {
@@ -53,12 +49,14 @@ notesRouter.put('/:id', (request, response, next) => {
 
 	const note = { content, important }
 
-	Note
-		.findByIdAndUpdate(request.params.id, note, { new: true, runValidators: true })
-		.then(updatedNote => {
+	Note.findByIdAndUpdate(request.params.id, note, {
+		new: true,
+		runValidators: true,
+	})
+		.then((updatedNote) => {
 			response.json(updatedNote)
 		})
-		.catch(error => next(error))
+		.catch((error) => next(error))
 })
 
 export default notesRouter
