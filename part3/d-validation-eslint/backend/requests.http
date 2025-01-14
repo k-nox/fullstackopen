@@ -21,7 +21,7 @@ POST {{baseUrl}}/api/notes
 Content-Type: application/json
 
 {
-	"content": "This is a note",
+	"content": "lol",
 	"important": true
 }
 
@@ -31,6 +31,6 @@ PUT {{baseUrl}}/api/notes/{{id}}
 Content-Type: application/json
 
 {
-	"content": "This is a note",
+	"content": "lol",
 	"important": false
 }
