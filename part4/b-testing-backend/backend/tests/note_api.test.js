@@ -17,10 +17,9 @@ describe('notes', async () => {
 
 	beforeEach(async () => {
 		await Note.deleteMany({})
-		let noteObject = new Note(initialNotes[0])
-		await noteObject.save()
-		noteObject = new Note(initialNotes[1])
-		await noteObject.save()
+		const noteObjects = initialNotes.map((note) => new Note(note))
+		const promises = noteObjects.map((note) => note.save())
+		await Promise.all(promises)
 	})
 
 	test('are returned as json', async () => {
