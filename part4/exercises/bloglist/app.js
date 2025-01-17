@@ -1,8 +1,9 @@
 import cors from 'cors'
 import express, { json } from 'express'
 import mongoose, { connect } from 'mongoose'
+import 'express-async-errors'
 import { blogRouter } from './controllers/blogs.js'
-import { logMiddleware } from './utils/middleware.js'
+import { errorHandler, logMiddleware } from './utils/middleware.js'
 
 export const app = (mongoURI) => {
 	const a = express()
@@ -12,5 +13,6 @@ export const app = (mongoURI) => {
 	a.use(json())
 	a.use(logMiddleware)
 	a.use('/api/blogs', blogRouter)
+	a.use(errorHandler)
 	return a
 }

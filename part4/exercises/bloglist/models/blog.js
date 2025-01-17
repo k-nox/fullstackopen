@@ -1,12 +1,19 @@
 import { Schema, model } from 'mongoose'
 
 const blogSchema = new Schema({
-	title: String,
+	title: {
+		type: String,
+		required: true,
+	},
 	author: String,
-	url: String,
+	url: {
+		type: String,
+		required: true,
+	},
 	likes: {
 		type: Number,
 		default: 0,
+		min: 0,
 	},
 })
 

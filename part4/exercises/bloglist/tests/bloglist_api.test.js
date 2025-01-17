@@ -47,8 +47,6 @@ describe('blog list api', () => {
 	})
 
 	test('should correctly add new blogs', async () => {
-		const blogsAtStart = await blogsInDb()
-
 		const newBlog = {
 			title: "Knox's cool blog",
 			author: 'Knox',
@@ -64,7 +62,7 @@ describe('blog list api', () => {
 
 		const blogsAtEnd = await blogsInDb()
 
-		assert.strictEqual(blogsAtEnd.length, blogsAtStart.length + 1)
+		assert.strictEqual(blogsAtEnd.length, blogs.length + 1)
 		const inserted = blogsAtEnd.find((blog) => blog.id === response.body.id)
 		assert.ok(inserted) // make sure it's not undefined
 
@@ -91,5 +89,29 @@ describe('blog list api', () => {
 		const inserted = blogsAtEnd.find((blog) => blog.id === response.body.id)
 		assert.ok(inserted) // make sure it's not undefined
 		assert.strictEqual(inserted.likes, 0)
+	})
+
+	test('should respond with 400 if the title is missing', async () => {
+		const newBlog = {
+			author: 'Knox',
+			url: 'http://knox.example.com',
+			likes: 1,
+		}
+
+		await api.post('/api/blogs').send(newBlog).expect(400)
+		const blogsAtEnd = await blogsInDb()
+		assert(blogsAtEnd.length, blogs.length)
+	})
+
+	test('should respond with 400 if the url is missing', async () => {
+		const newBlog = {
+			author: 'Knox',
+			title: "Knox's cool blog",
+			likes: 1,
+		}
+
+		await api.post('/api/blogs').send(newBlog).expect(400)
+		const blogsAtEnd = await blogsInDb()
+		assert(blogsAtEnd.length, blogs.length)
 	})
 })
