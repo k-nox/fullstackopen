@@ -1,16 +1,16 @@
 import cors from 'cors'
 import express, { json } from 'express'
-import { connect } from 'mongoose'
+import mongoose, { connect } from 'mongoose'
 import { blogRouter } from './controllers/blogs.js'
-import { config } from './utils/config.js'
 import { logMiddleware } from './utils/middleware.js'
 
-export const app = express()
-
-connect(config.MONGODB_URI)
-
-app.use(cors())
-app.use(json())
-app.use(logMiddleware)
-
-app.use('/api/blogs', blogRouter)
+export const app = (mongoURI) => {
+	const a = express()
+	mongoose.set('strictQuery', false)
+	connect(mongoURI).then(console.log('connected to mongoose'))
+	a.use(cors())
+	a.use(json())
+	a.use(logMiddleware)
+	a.use('/api/blogs', blogRouter)
+	return a
+}
