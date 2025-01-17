@@ -73,4 +73,23 @@ describe('blog list api', () => {
 		assert.strictEqual(inserted.url, newBlog.url)
 		assert.strictEqual(inserted.likes, newBlog.likes)
 	})
+
+	test('should set likes to 0 if missing when creating a new blog', async () => {
+		const newBlog = {
+			title: "Knox's cool blog",
+			author: 'Knox',
+			url: 'http://knox.example.com',
+		}
+
+		const response = await api
+			.post('/api/blogs')
+			.send(newBlog)
+			.expect(201)
+			.expect('Content-Type', /application\/json/)
+
+		const blogsAtEnd = await blogsInDb()
+		const inserted = blogsAtEnd.find((blog) => blog.id === response.body.id)
+		assert.ok(inserted) // make sure it's not undefined
+		assert.strictEqual(inserted.likes, 0)
+	})
 })
