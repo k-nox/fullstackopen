@@ -21,7 +21,7 @@ POST {{baseUrl}}/api/notes
 Content-Type: application/json
 
 {
-	"content": "lol",
+	"content": "this is a note! hello!",
 	"important": true
 }
 
@@ -33,4 +33,15 @@ Content-Type: application/json
 {
 	"content": "lol",
 	"important": false
+}
+
+###
+# Create a user
+POST {{baseUrl}}/api/users
+Content-Type: application/json
+
+{
+	"username": "knox131313",
+	"name": "knox",
+	"password": "fakepassword"
 }

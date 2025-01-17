@@ -1,9 +1,13 @@
 import logger from './logger.js'
 
 const requestLogger = (request, _response, next) => {
+	const body = { ...request.body }
+	if (Object.hasOwn(body, 'password')) {
+		delete body.password // don't log passwords!
+	}
 	logger.info('Method:', request.method)
 	logger.info('Path:', request.path)
-	logger.info('Body:', request.body)
+	logger.info('Body:', body)
 	logger.info('---')
 	next()
 }
