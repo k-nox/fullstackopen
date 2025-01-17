@@ -18,9 +18,9 @@ describe('blog list api', () => {
 	})
 
 	beforeEach(async () => {
-		Blog.deleteMany({})
-		const promises = blogModels.map((model) => model.save())
-		return Promise.all(promises)
+		await Blog.deleteMany({})
+		const promises = blogModels().map((model) => model.save())
+		await Promise.all(promises)
 	})
 
 	after(async () => {
@@ -28,90 +28,114 @@ describe('blog list api', () => {
 		await mongoServer.stop()
 	})
 
-	test('should return correct number of blogs as json', async () => {
-		const response = await api
-			.get('/api/blogs')
-			.expect(200)
-			.expect('Content-Type', /application\/json/)
+	describe('when listing all blogs', () => {
+		test('the correct number of blogs are returned as json', async () => {
+			const response = await api
+				.get('/api/blogs')
+				.expect(200)
+				.expect('Content-Type', /application\/json/)
 
-		assert.strictEqual(response.body.length, blogs.length)
-	})
+			assert.strictEqual(response.body.length, blogs.length)
+		})
 
-	test('should return blogs that have an id, not an _id', async () => {
-		const response = await api.get('/api/blogs').expect(200)
-		const blogs = response.body
-		blogs.forEach((blog) => {
-			assert(Object.hasOwn(blog, 'id'))
-			assert(!Object.hasOwn(blog, '_id'))
+		test('blogs each have an id property and not an _id property', async () => {
+			const response = await api.get('/api/blogs').expect(200)
+			const blogs = response.body
+			blogs.forEach((blog) => {
+				assert(Object.hasOwn(blog, 'id'))
+				assert(!Object.hasOwn(blog, '_id'))
+			})
 		})
 	})
 
-	test('should correctly add new blogs', async () => {
-		const newBlog = {
-			title: "Knox's cool blog",
-			author: 'Knox',
-			url: 'http://knox.example.com',
-			likes: 1,
-		}
+	describe('adding new blogs', () => {
+		test('succeeds with valid data', async () => {
+			const newBlog = {
+				title: "Knox's cool blog",
+				author: 'Knox',
+				url: 'http://knox.example.com',
+				likes: 1,
+			}
 
-		const response = await api
-			.post('/api/blogs')
-			.send(newBlog)
-			.expect(201)
-			.expect('Content-Type', /application\/json/)
+			const response = await api
+				.post('/api/blogs')
+				.send(newBlog)
+				.expect(201)
+				.expect('Content-Type', /application\/json/)
 
-		const blogsAtEnd = await blogsInDb()
+			const blogsAtEnd = await blogsInDb()
 
-		assert.strictEqual(blogsAtEnd.length, blogs.length + 1)
-		const inserted = blogsAtEnd.find((blog) => blog.id === response.body.id)
-		assert.ok(inserted) // make sure it's not undefined
+			assert.strictEqual(blogsAtEnd.length, blogs.length + 1)
+			const inserted = blogsAtEnd.find((blog) => blog.id === response.body.id)
+			assert.ok(inserted) // make sure it's not undefined
 
-		assert.strictEqual(inserted.title, newBlog.title)
-		assert.strictEqual(inserted.author, newBlog.author)
-		assert.strictEqual(inserted.url, newBlog.url)
-		assert.strictEqual(inserted.likes, newBlog.likes)
+			assert.strictEqual(inserted.title, newBlog.title)
+			assert.strictEqual(inserted.author, newBlog.author)
+			assert.strictEqual(inserted.url, newBlog.url)
+			assert.strictEqual(inserted.likes, newBlog.likes)
+		})
+
+		test('sets likes to 0 if missing', async () => {
+			const newBlog = {
+				title: "Knox's cool blog",
+				author: 'Knox',
+				url: 'http://knox.example.com',
+			}
+
+			const response = await api
+				.post('/api/blogs')
+				.send(newBlog)
+				.expect(201)
+				.expect('Content-Type', /application\/json/)
+
+			const blogsAtEnd = await blogsInDb()
+			const inserted = blogsAtEnd.find((blog) => blog.id === response.body.id)
+			assert.ok(inserted) // make sure it's not undefined
+			assert.strictEqual(inserted.likes, 0)
+		})
+
+		test('responds with 400 if the title is missing', async () => {
+			const newBlog = {
+				author: 'Knox',
+				url: 'http://knox.example.com',
+				likes: 1,
+			}
+
+			await api.post('/api/blogs').send(newBlog).expect(400)
+			const blogsAtEnd = await blogsInDb()
+			assert(blogsAtEnd.length, blogs.length)
+		})
+
+		test('responds with 400 if the url is missing', async () => {
+			const newBlog = {
+				author: 'Knox',
+				title: "Knox's cool blog",
+				likes: 1,
+			}
+
+			await api.post('/api/blogs').send(newBlog).expect(400)
+			const blogsAtEnd = await blogsInDb()
+			assert(blogsAtEnd.length, blogs.length)
+		})
 	})
 
-	test('should set likes to 0 if missing when creating a new blog', async () => {
-		const newBlog = {
-			title: "Knox's cool blog",
-			author: 'Knox',
-			url: 'http://knox.example.com',
-		}
+	describe('deleting a blog', () => {
+		test('succeeds with valid id', async () => {
+			const blogsAtStart = await blogsInDb()
+			const blogToDelete = blogsAtStart[0]
 
-		const response = await api
-			.post('/api/blogs')
-			.send(newBlog)
-			.expect(201)
-			.expect('Content-Type', /application\/json/)
+			await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
 
-		const blogsAtEnd = await blogsInDb()
-		const inserted = blogsAtEnd.find((blog) => blog.id === response.body.id)
-		assert.ok(inserted) // make sure it's not undefined
-		assert.strictEqual(inserted.likes, 0)
-	})
+			const blogsAtEnd = await blogsInDb()
+			assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1)
+			assert(!blogsAtEnd.some((blog) => blog.id === blogToDelete.id))
+		})
 
-	test('should respond with 400 if the title is missing', async () => {
-		const newBlog = {
-			author: 'Knox',
-			url: 'http://knox.example.com',
-			likes: 1,
-		}
-
-		await api.post('/api/blogs').send(newBlog).expect(400)
-		const blogsAtEnd = await blogsInDb()
-		assert(blogsAtEnd.length, blogs.length)
-	})
-
-	test('should respond with 400 if the url is missing', async () => {
-		const newBlog = {
-			author: 'Knox',
-			title: "Knox's cool blog",
-			likes: 1,
-		}
-
-		await api.post('/api/blogs').send(newBlog).expect(400)
-		const blogsAtEnd = await blogsInDb()
-		assert(blogsAtEnd.length, blogs.length)
+		test('responds with 400 if the id is invalid', async () => {
+			const invalidId = 'abcdefg'
+			await api.delete(`/api/blogs/${invalidId}`).expect(400)
+			const blogsAtEnd = await blogsInDb()
+			assert.strictEqual(blogsAtEnd.length, blogs.length)
+		})
 	})
 })
