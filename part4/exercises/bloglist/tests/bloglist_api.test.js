@@ -36,4 +36,13 @@ describe('blog list api', () => {
 
 		assert.strictEqual(response.body.length, blogs.length)
 	})
+
+	test('should return blogs that have an id, not an _id', async () => {
+		const response = await api.get('/api/blogs').expect(200)
+		const blogs = response.body
+		blogs.forEach((blog) => {
+			assert(Object.hasOwn(blog, 'id'))
+			assert(!Object.hasOwn(blog, '_id'))
+		})
+	})
 })

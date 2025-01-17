@@ -7,4 +7,12 @@ const blogSchema = new Schema({
 	likes: Number,
 })
 
+blogSchema.set('toJSON', {
+	virtuals: true,
+	versionKey: false,
+	transform: (_doc, ret) => {
+		delete ret._id
+	},
+})
+
 export const Blog = model('Blog', blogSchema)
