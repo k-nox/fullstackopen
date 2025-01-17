@@ -36,6 +36,10 @@ Content-Type: application/json
 }
 
 ###
+# Get all users
+GET {{baseUrl}}/api/users
+
+###
 # Create a user
 POST {{baseUrl}}/api/users
 Content-Type: application/json
