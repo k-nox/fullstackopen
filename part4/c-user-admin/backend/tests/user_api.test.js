@@ -52,5 +52,24 @@ describe('user api', () => {
 			const usernames = usersAtEnd.map((u) => u.username)
 			assert(usernames.includes(newUser.username))
 		})
+
+		test('creation fails with proper statuscode and message if username already taken', async () => {
+			const usersAtStart = await usersInDb()
+			const newUser = {
+				username: usersAtStart[0].username,
+				name: 'superuser',
+				password: 'thisisasecret',
+			}
+
+			const result = await api
+				.post('/api/users')
+				.send(newUser)
+				.expect(400)
+				.expect('Content-Type', /application\/json/)
+
+			const usersAtEnd = await usersInDb()
+			assert(result.body.error.includes('expected `username` to be unique'))
+			assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+		})
 	})
 })
