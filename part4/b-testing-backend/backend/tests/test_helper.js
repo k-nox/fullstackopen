@@ -16,7 +16,7 @@ export const nonExistingId = async () => {
 	await note.save()
 	await note.deleteOne()
 
-	return note.__id.toString()
+	return note._id.toString()
 }
 
 export const notesInDb = async () => {
