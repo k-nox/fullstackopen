@@ -1,0 +1,33 @@
+{
+	"name": "backend",
+	"version": "0.0.1",
+	"main": "index.js",
+	"scripts": {
+		"start": "NODE_ENV=production node index.js",
+		"dev": "NODE_ENV=developement nodemon index.js",
+		"test": "NODE_ENV=test node --test",
+		"build:ui": "rm -rf dist && cd ../frontend/ && npm run build && cp -r dist ../backend",
+		"deploy": "fly deploy",
+		"deploy:full": "npm run build:ui && npm run deploy",
+		"logs:prod": "fly logs",
+		"lint": "biome check ."
+	},
+	"author": "Lux Barker",
+	"license": "MIT",
+	"description": "",
+	"type": "module",
+	"dependencies": {
+		"bcrypt": "^5.1.1",
+		"cors": "^2.8.5",
+		"express": "^4.21.2",
+		"express-async-errors": "^3.1.1",
+		"mongoose": "^8.9.4"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"globals": "^15.14.0",
+		"mongodb-memory-server": "^10.1.3",
+		"nodemon": "^3.1.9",
+		"supertest": "^7.0.0"
+	}
+}
