@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import Note from '../models/note.js'
+import User from '../models/user.js'
 
 const notesRouter = Router()
 
@@ -18,14 +19,19 @@ notesRouter.get('/:id', async (request, response) => {
 })
 
 notesRouter.post('/', async (request, response) => {
-	const { content, important } = request.body
+	const { content, important, userId } = request.body
+
+	const user = await User.findById(userId)
 
 	const note = new Note({
 		content: content,
 		important: important || false,
+		user: user.id,
 	})
 
 	const savedNote = await note.save()
+	user.notes = user.notes.concat(savedNote._id)
+	await user.save()
 	response.status(201).json(savedNote)
 })
 
