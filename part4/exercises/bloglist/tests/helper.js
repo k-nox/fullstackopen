@@ -9,3 +9,8 @@ export const blogModels = blogs.map(({ title, author, url, likes }) => {
 		likes,
 	})
 })
+
+export const blogsInDb = async () => {
+	const blogs = await Blog.find({})
+	return blogs.map((blog) => blog.toJSON())
+}

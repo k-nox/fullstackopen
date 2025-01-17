@@ -6,7 +6,7 @@ import supertest from 'supertest'
 import { app } from '../app.js'
 import { Blog } from '../models/blog.js'
 import { blogs } from './fixtures.js'
-import { blogModels } from './helper.js'
+import { blogModels, blogsInDb } from './helper.js'
 
 describe('blog list api', () => {
 	let mongoServer
@@ -44,5 +44,33 @@ describe('blog list api', () => {
 			assert(Object.hasOwn(blog, 'id'))
 			assert(!Object.hasOwn(blog, '_id'))
 		})
+	})
+
+	test('should correctly add new blogs', async () => {
+		const blogsAtStart = await blogsInDb()
+
+		const newBlog = {
+			title: "Knox's cool blog",
+			author: 'Knox',
+			url: 'http://knox.example.com',
+			likes: 1,
+		}
+
+		const response = await api
+			.post('/api/blogs')
+			.send(newBlog)
+			.expect(201)
+			.expect('Content-Type', /application\/json/)
+
+		const blogsAtEnd = await blogsInDb()
+
+		assert.strictEqual(blogsAtEnd.length, blogsAtStart.length + 1)
+		const inserted = blogsAtEnd.find((blog) => blog.id === response.body.id)
+		assert.ok(inserted) // make sure it's not undefined
+
+		assert.strictEqual(inserted.title, newBlog.title)
+		assert.strictEqual(inserted.author, newBlog.author)
+		assert.strictEqual(inserted.url, newBlog.url)
+		assert.strictEqual(inserted.likes, newBlog.likes)
 	})
 })
