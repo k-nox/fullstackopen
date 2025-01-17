@@ -1,11 +1,18 @@
 import assert from 'node:assert'
 import { after, before, beforeEach, describe, test } from 'node:test'
+import { hash } from 'bcrypt'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import mongoose from 'mongoose'
 import supertest from 'supertest'
 import { app } from '../app.js'
 import Note from '../models/note.js'
-import { initialNotes, nonExistingId, notesInDb } from './test_helper.js'
+import User from '../models/user.js'
+import {
+	initialNotes,
+	nonExistingId,
+	notesInDb,
+	usersInDb,
+} from './test_helper.js'
 
 describe('notes api', () => {
 	let mongoServer
@@ -23,7 +30,20 @@ describe('notes api', () => {
 	describe('when there are some notes saved initially', () => {
 		beforeEach(async () => {
 			await Note.deleteMany({})
-			const noteObjects = initialNotes.map((note) => new Note(note))
+			await User.deleteMany({})
+
+			const passwordHash = await hash('sekret', 10)
+			const user = new User({ username: 'root', passwordHash })
+			await user.save()
+
+			const noteObjects = initialNotes.map(
+				(note) =>
+					new Note({
+						content: note.content,
+						important: note.important,
+						userId: user.id,
+					}),
+			)
 			const promises = noteObjects.map((note) => note.save())
 			await Promise.all(promises)
 		})
@@ -73,9 +93,11 @@ describe('notes api', () => {
 
 		describe('addition of a new note', () => {
 			test('succeeds with valid data', async () => {
+				const users = await usersInDb()
 				const newNote = {
 					content: 'async/await simplifies making async calls',
 					important: true,
+					userId: users[0].id,
 				}
 
 				await api
@@ -92,8 +114,10 @@ describe('notes api', () => {
 			})
 
 			test('fails with 400 if data is invalid', async () => {
+				const users = await usersInDb()
 				const newNote = {
 					important: true,
+					userId: users[0].id,
 				}
 
 				await api.post('/api/notes').send(newNote).expect(400)
