@@ -1,5 +1,5 @@
 @baseURL=http://localhost:3003
-@id=678abaa0873cfd93dd411586
+@id=678ac6999f68fc9d684d2f66
 
 # Get all blog 
 GET {{baseURL}}/api/blogs
@@ -19,3 +19,15 @@ Content-Type: application/json
 ###
 # Delete a blog
 DELETE {{baseURL}}/api/blogs/{{id}}
+
+###
+# Update a blog
+PUT {{baseURL}}/api/blogs/{{id}}
+Content-Type: application/json
+
+{
+	"title": "Knox's Cool Blog 2: Electric Boogaloo",
+	"author": "Knox",
+	"url": "http://knox-also.example.com",
+	"likes": 1000
+}

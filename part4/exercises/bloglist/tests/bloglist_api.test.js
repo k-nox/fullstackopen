@@ -138,4 +138,40 @@ describe('blog list api', () => {
 			assert.strictEqual(blogsAtEnd.length, blogs.length)
 		})
 	})
+
+	describe('updating a blog', () => {
+		test('succeeds with valid data and id', async () => {
+			const blogsAtStart = await blogsInDb()
+			const blogToUpdate = blogsAtStart[0]
+
+			const response = await api
+				.put(`/api/blogs/${blogToUpdate.id}`)
+				.send({
+					title: blogToUpdate.title,
+					url: blogToUpdate.url,
+					author: blogToUpdate.author,
+					likes: blogToUpdate.likes + 1,
+				})
+				.expect(200)
+				.expect('Content-Type', /application\/json/)
+
+			const blogsAtEnd = await blogsInDb()
+			const updatedBlog = blogsAtEnd.find((blog) => blog.id === blogToUpdate.id)
+			assert.deepStrictEqual(updatedBlog, response.body)
+			assert.strictEqual(updatedBlog.likes, blogToUpdate.likes + 1)
+		})
+
+		test('fails with 400 if id is invalid', async () => {
+			const invalidId = 'abcdefg'
+			await api
+				.put(`/api/blogs/${invalidId}`)
+				.send({
+					title: "Knox's cool blog",
+					author: 'Knox',
+					url: 'http://knox.example.com',
+					likes: 1,
+				})
+				.expect(400)
+		})
+	})
 })
