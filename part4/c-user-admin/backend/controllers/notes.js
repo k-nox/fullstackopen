@@ -23,7 +23,9 @@ notesRouter.get('/:id', async (request, response) => {
 
 notesRouter.post('/', async (request, response) => {
 	const { content, important, userId } = request.body
-
+	if (!userId) {
+		return response.status(400).json({ error: 'userId is required' })
+	}
 	const user = await User.findById(userId)
 
 	const note = new Note({

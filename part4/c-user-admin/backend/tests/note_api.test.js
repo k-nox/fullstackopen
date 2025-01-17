@@ -125,6 +125,18 @@ describe('notes api', () => {
 				const notesAtEnd = await notesInDb()
 				assert.strictEqual(notesAtEnd.length, initialNotes.length)
 			})
+
+			test('fails with 400 if missing userId', async () => {
+				const newNote = {
+					content: 'this is a note',
+					important: true,
+				}
+
+				await api.post('/api/notes').send(newNote).expect(400)
+
+				const notesAtEnd = await notesInDb()
+				assert.strictEqual(notesAtEnd.length, initialNotes.length)
+			})
 		})
 
 		describe('deletion of a note', () => {
