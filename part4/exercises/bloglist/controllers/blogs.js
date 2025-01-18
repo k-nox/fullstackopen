@@ -1,7 +1,5 @@
 import { Router } from 'express'
-import jwt from 'jsonwebtoken'
 import { Blog } from '../models/blog.js'
-import { User } from '../models/user.js'
 import { userExtractor } from '../utils/middleware.js'
 
 export const blogRouter = Router()

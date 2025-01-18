@@ -1,12 +1,14 @@
 import assert from 'node:assert'
 import { after, before, beforeEach, describe, test } from 'node:test'
+import { hash } from 'bcrypt'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import mongoose from 'mongoose'
 import supertest from 'supertest'
 import { app } from '../app.js'
 import { Blog } from '../models/blog.js'
+import { User } from '../models/user.js'
 import { blogs } from './fixtures.js'
-import { blogModels, blogsInDb } from './helper.js'
+import { blogModels, blogsInDb, token, userById, usersInDb } from './helper.js'
 
 describe('blog list api', () => {
 	let mongoServer
@@ -18,9 +20,21 @@ describe('blog list api', () => {
 	})
 
 	beforeEach(async () => {
+		await User.deleteMany({})
+		const pwHash = await hash('supersecret', 10)
+		const user = new User({
+			username: 'knox13',
+			name: 'Knox',
+			passwordHash: pwHash,
+		})
+
+		await user.save()
+
 		await Blog.deleteMany({})
-		const promises = blogModels().map((model) => model.save())
-		await Promise.all(promises)
+		const promises = blogModels(user.id).map((model) => model.save())
+		const blogs = await Promise.all(promises)
+		user.blogs = blogs.map((b) => b.id)
+		await user.save()
 	})
 
 	after(async () => {
@@ -50,6 +64,10 @@ describe('blog list api', () => {
 
 	describe('adding new blogs', () => {
 		test('succeeds with valid data', async () => {
+			const users = await usersInDb()
+			const user = users[0]
+			const userBlogsAtStart = user.blogs
+
 			const newBlog = {
 				title: "Knox's cool blog",
 				author: 'Knox',
@@ -59,13 +77,18 @@ describe('blog list api', () => {
 
 			const response = await api
 				.post('/api/blogs')
+				.auth(token({ username: user.username, id: user.id }), {
+					type: 'bearer',
+				})
 				.send(newBlog)
 				.expect(201)
 				.expect('Content-Type', /application\/json/)
 
 			const blogsAtEnd = await blogsInDb()
+			const userAtEnd = await userById(user.id)
 
 			assert.strictEqual(blogsAtEnd.length, blogs.length + 1)
+			assert.strictEqual(userAtEnd.blogs.length, userBlogsAtStart.length + 1)
 			const inserted = blogsAtEnd.find((blog) => blog.id === response.body.id)
 			assert.ok(inserted) // make sure it's not undefined
 
@@ -76,6 +99,9 @@ describe('blog list api', () => {
 		})
 
 		test('sets likes to 0 if missing', async () => {
+			const users = await usersInDb()
+			const user = users[0]
+
 			const newBlog = {
 				title: "Knox's cool blog",
 				author: 'Knox',
@@ -84,6 +110,9 @@ describe('blog list api', () => {
 
 			const response = await api
 				.post('/api/blogs')
+				.auth(token({ username: user.username, id: user.id }), {
+					type: 'bearer',
+				})
 				.send(newBlog)
 				.expect(201)
 				.expect('Content-Type', /application\/json/)
@@ -95,25 +124,41 @@ describe('blog list api', () => {
 		})
 
 		test('responds with 400 if the title is missing', async () => {
+			const users = await usersInDb()
+			const user = users[0]
 			const newBlog = {
 				author: 'Knox',
 				url: 'http://knox.example.com',
 				likes: 1,
 			}
 
-			await api.post('/api/blogs').send(newBlog).expect(400)
+			await api
+				.post('/api/blogs')
+				.auth(token({ username: user.username, id: user.id }), {
+					type: 'bearer',
+				})
+				.send(newBlog)
+				.expect(400)
 			const blogsAtEnd = await blogsInDb()
 			assert(blogsAtEnd.length, blogs.length)
 		})
 
 		test('responds with 400 if the url is missing', async () => {
+			const users = await usersInDb()
+			const user = users[0]
 			const newBlog = {
 				author: 'Knox',
 				title: "Knox's cool blog",
 				likes: 1,
 			}
 
-			await api.post('/api/blogs').send(newBlog).expect(400)
+			await api
+				.post('/api/blogs')
+				.auth(token({ username: user.username, id: user.id }), {
+					type: 'bearer',
+				})
+				.send(newBlog)
+				.expect(400)
 			const blogsAtEnd = await blogsInDb()
 			assert(blogsAtEnd.length, blogs.length)
 		})
@@ -121,21 +166,53 @@ describe('blog list api', () => {
 
 	describe('deleting a blog', () => {
 		test('succeeds with valid id', async () => {
+			const users = await usersInDb()
+			const user = users[0]
+			const userBlogsAtStart = user.blogs
 			const blogsAtStart = await blogsInDb()
 			const blogToDelete = blogsAtStart[0]
 
-			await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+			await api
+				.delete(`/api/blogs/${blogToDelete.id}`)
+				.auth(token({ username: user.username, id: user.id }), {
+					type: 'bearer',
+				})
+				.expect(204)
 
 			const blogsAtEnd = await blogsInDb()
+			const userAtEnd = await userById(user.id)
+			assert.strictEqual(userAtEnd.blogs.length, userBlogsAtStart.length - 1)
 			assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1)
 			assert(!blogsAtEnd.some((blog) => blog.id === blogToDelete.id))
 		})
 
 		test('responds with 400 if the id is invalid', async () => {
 			const invalidId = 'abcdefg'
-			await api.delete(`/api/blogs/${invalidId}`).expect(400)
+			const users = await usersInDb()
+			const user = users[0]
+			const userBlogsAtStart = user.blogs
+			await api
+
+			await api
+				.delete(`/api/blogs/${invalidId}`)
+				.auth(token({ username: user.username, id: user.id }), {
+					type: 'bearer',
+				})
+				.expect(400)
+
 			const blogsAtEnd = await blogsInDb()
 			assert.strictEqual(blogsAtEnd.length, blogs.length)
+			const userAtEnd = await userById(user.id)
+			assert.strictEqual(userBlogsAtStart.length, userAtEnd.blogs.length)
+		})
+
+		test('fails if token is not provided', async () => {
+			const blogsAtStart = await blogsInDb()
+			const blogToDelete = blogsAtStart[0]
+			await api.delete(`/api/blogs/${blogToDelete.id}`).expect(401)
+
+			const blogsAtEnd = await blogsInDb()
+			assert.strictEqual(blogsAtEnd.length, blogsAtStart.length)
 		})
 	})
 
