@@ -4,6 +4,15 @@ import { User } from '../models/user.js'
 
 export const userRouter = Router()
 
+userRouter.get('/', async (_request, response) => {
+	const users = await User.find({}).populate('blogs', {
+		url: 1,
+		title: 1,
+		author: 1,
+	})
+	response.json(users)
+})
+
 userRouter.post('/', async (request, response) => {
 	const { username, password, name } = request.body
 	if (!password || password.length < 3) {
@@ -22,9 +31,4 @@ userRouter.post('/', async (request, response) => {
 
 	const savedUser = await user.save()
 	response.status(201).json(savedUser)
-})
-
-userRouter.get('/', async (_request, response) => {
-	const users = await User.find({})
-	response.json(users)
 })
