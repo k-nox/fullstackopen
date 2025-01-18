@@ -50,7 +50,7 @@ describe('user api', () => {
 	})
 
 	describe('when creating users', () => {
-		test.only('succeeds and updates the database', async () => {
+		test('succeeds and updates the database', async () => {
 			const usersAtStart = await usersInDb()
 
 			const newUser = {
@@ -69,6 +69,118 @@ describe('user api', () => {
 			assert.strictEqual(usersAtEnd.length, usersAtStart.length + 1)
 			const newUserInDb = usersAtEnd.find((u) => u.id === response.body.id)
 			assert.deepStrictEqual(response.body, newUserInDb)
+		})
+
+		test('fails with 400 if username is not unique', async () => {
+			const usersAtStart = await usersInDb()
+
+			const newUser = {
+				username: 'knox13',
+				name: 'Not Knox',
+				password: 'thisissecret',
+			}
+
+			const response = await api
+				.post('/api/users')
+				.send(newUser)
+				.expect(400)
+				.expect('Content-Type', /application\/json/)
+
+			const usersAtEnd = await usersInDb()
+			assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+			assert.ok(
+				response.body.error.includes('expected `username` to be unique'),
+			)
+		})
+
+		test('fails with 400 if username is less than 3 characters', async () => {
+			const usersAtStart = await usersInDb()
+
+			const newUser = {
+				username: 'no',
+				name: 'Not Knox',
+				password: 'thisissecret',
+			}
+
+			const response = await api
+				.post('/api/users')
+				.send(newUser)
+				.expect(400)
+				.expect('Content-Type', /application\/json/)
+
+			const usersAtEnd = await usersInDb()
+			assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+			assert.ok(
+				response.body.error.includes(
+					'Path `username` (`no`) is shorter than the minimum allowed length (3)',
+				),
+			)
+		})
+
+		test('fails with 400 if password is less than 3 characters', async () => {
+			const usersAtStart = await usersInDb()
+
+			const newUser = {
+				username: 'knox1313',
+				name: 'Not Knox',
+				password: 'no',
+			}
+
+			const response = await api
+				.post('/api/users')
+				.send(newUser)
+				.expect(400)
+				.expect('Content-Type', /application\/json/)
+
+			const usersAtEnd = await usersInDb()
+			assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+			assert.ok(
+				response.body.error.includes(
+					'password required to be at least three characters',
+				),
+			)
+		})
+
+		test('fails with 400 if password is missing', async () => {
+			const usersAtStart = await usersInDb()
+
+			const newUser = {
+				username: 'knox1313',
+				name: 'Not Knox',
+			}
+
+			const response = await api
+				.post('/api/users')
+				.send(newUser)
+				.expect(400)
+				.expect('Content-Type', /application\/json/)
+
+			const usersAtEnd = await usersInDb()
+			assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+			assert.ok(
+				response.body.error.includes(
+					'password required to be at least three characters',
+				),
+			)
+		})
+
+		test('fails with 400 if username is missing', async () => {
+			const usersAtStart = await usersInDb()
+
+			const newUser = {
+				name: 'Not Knox',
+				password: 'thisissecret',
+			}
+
+			const response = await api
+				.post('/api/users')
+				.send(newUser)
+				.expect(400)
+				.expect('Content-Type', /application\/json/)
+
+			const usersAtEnd = await usersInDb()
+			assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+			assert.ok(response.body.error.includes('Path `username` is required'))
 		})
 	})
 })

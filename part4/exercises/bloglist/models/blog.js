@@ -20,6 +20,7 @@ const blogSchema = new Schema({
 blogSchema.set('toJSON', {
 	virtuals: true,
 	versionKey: false,
+	flattenObjectIds: true,
 	transform: (_doc, ret) => {
 		delete ret._id
 	},

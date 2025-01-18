@@ -29,6 +29,13 @@ export const errorHandler = (error, _request, response, next) => {
 			return response.status(400).json({ error: 'malformed id' })
 		case 'ValidationError':
 			return response.status(400).json({ error: error.message })
+		case 'MongoServerError':
+			if (error.message.includes('E11000 duplicate key error')) {
+				return response
+					.status(400)
+					.json({ error: 'expected `username` to be unique' })
+			}
+			break
 	}
 	next(error)
 }
