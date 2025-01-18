@@ -36,6 +36,7 @@ blogRouter.delete('/:id', userExtractor, async (request, response) => {
 	const user = request.user
 
 	const blog = await Blog.findById(request.params.id)
+	console.log(blog)
 
 	if (blog.user.toString() !== user.id) {
 		return response
@@ -44,6 +45,8 @@ blogRouter.delete('/:id', userExtractor, async (request, response) => {
 	}
 
 	await Blog.findByIdAndDelete(blog.id)
+	user.blogs = user.blogs.filter((b) => b.toString() !== blog.id)
+	await user.save()
 	response.status(204).end()
 })
 
