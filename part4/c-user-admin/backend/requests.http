@@ -2,34 +2,31 @@
 @noteid=678ae795222a645e5fa5dff0
 @userid=678adebb64cd520a73b90141
 
-# Get index
-GET {{baseUrl}}/
-
 ###
-# Get all notes
+# @name get_notes
 GET {{baseUrl}}/api/notes
 
 ###
-# Get one note
+# @name get_note
 GET {{baseUrl}}/api/notes/{{noteid}}
 
 ###
-# Delete one note
+# @name delete_note
 DELETE {{baseUrl}}/api/notes/{{noteid}}
 
 ###
-# Create one note
+# @name create_note
 POST {{baseUrl}}/api/notes
 Content-Type: application/json
+Authorization: Bearer {{login.response.body.$.token}}
 
 {
 	"content": "i can make notes!",
-	"important": true,
-	"userId": "{{userid}}"
+	"important": true
 }
 
 ###
-# Update one note
+# @name update_note
 PUT {{baseUrl}}/api/notes/{{id}}
 Content-Type: application/json
 
@@ -39,11 +36,11 @@ Content-Type: application/json
 }
 
 ###
-# Get all users
+# @name get_users
 GET {{baseUrl}}/api/users
 
 ###
-# Create a user
+# @name create_user
 POST {{baseUrl}}/api/users
 Content-Type: application/json
 
@@ -54,7 +51,7 @@ Content-Type: application/json
 }
 
 ###
-# Login
+# @name login
 POST {{baseUrl}}/api/login
 Content-Type: application/json
 

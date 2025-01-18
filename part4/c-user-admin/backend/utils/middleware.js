@@ -18,17 +18,20 @@ const unknownEndpoint = (_request, response) => {
 
 const errorHandler = (error, _request, response, next) => {
 	logger.error(error.message)
-	if (error.name === 'CastError') {
-		return response.status(400).send({ error: 'malformed id' })
-	} else if (error.name === 'ValidationError') {
-		return response.status(400).json({ error: error.message })
-	} else if (
-		error.name === 'MongoServerError' &&
-		error.message.includes('E11000 duplicate key error')
-	) {
-		return response
-			.status(400)
-			.json({ error: 'expected `username` to be unique' })
+	switch (error.name) {
+		case 'CastError':
+			return response.status(400).send({ error: 'malformed id' })
+		case 'ValidationError':
+			return response.status(400).json({ error: error.message })
+		case 'MongoServerError':
+			if (error.message.includes('E11000 duplicate key error')) {
+				return response
+					.status(400)
+					.json({ error: 'expected `username` to be unique' })
+			}
+			break
+		case 'JsonWebTokenError':
+			return response.status(401).json({ error: 'token invalid' })
 	}
 
 	next(error)
