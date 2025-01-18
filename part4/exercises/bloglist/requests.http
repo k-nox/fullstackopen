@@ -1,5 +1,5 @@
 @baseURL=http://localhost:3003
-@id=678c056eef2b307870bbda01
+@id=678c0d2537d92f27d1f27724
 
 # @name get_blogs
 GET {{baseURL}}/api/blogs

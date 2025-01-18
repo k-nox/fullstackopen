@@ -2,6 +2,7 @@ import { Router } from 'express'
 import jwt from 'jsonwebtoken'
 import { Blog } from '../models/blog.js'
 import { User } from '../models/user.js'
+import { userExtractor } from '../utils/middleware.js'
 
 export const blogRouter = Router()
 
@@ -13,14 +14,9 @@ blogRouter.get('/', async (_request, response) => {
 	response.json(blogs)
 })
 
-blogRouter.post('/', async (request, response) => {
+blogRouter.post('/', userExtractor, async (request, response) => {
 	const { title, url, author, likes } = request.body
-	const decodedToken = jwt.verify(request.token, process.env.SECRET)
-	if (!decodedToken.id) {
-		return response.status(401).json({ error: 'token invalid' })
-	}
-
-	const user = await User.findById(decodedToken.id)
+	const user = request.user
 
 	const blog = new Blog({
 		title,
@@ -36,13 +32,8 @@ blogRouter.post('/', async (request, response) => {
 	response.status(201).json(savedBlog)
 })
 
-blogRouter.delete('/:id', async (request, response) => {
-	const decodedToken = jwt.verify(request.token, process.env.SECRET)
-	if (!decodedToken.id) {
-		return response.status(401).json({ error: 'token invalid' })
-	}
-
-	const user = await User.findById(decodedToken.id)
+blogRouter.delete('/:id', userExtractor, async (request, response) => {
+	const user = request.user
 
 	const blog = await Blog.findById(request.params.id)
 

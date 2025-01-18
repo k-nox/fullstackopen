@@ -1,4 +1,6 @@
+import jwt from 'jsonwebtoken'
 import morgan from 'morgan'
+import { User } from '../models/user.js'
 import { logger } from './logger.js'
 
 morgan.token('body', (request) => {
@@ -30,6 +32,21 @@ export const tokenExtractor = (request, _response, next) => {
 	if (auth && auth.startsWith('Bearer ')) {
 		request.token = auth.replace('Bearer ', '')
 	}
+	next()
+}
+
+export const userExtractor = async (request, response, next) => {
+	const decodedToken = jwt.verify(request.token, process.env.SECRET)
+	if (!decodedToken.id) {
+		return response.status(401).json({ error: 'token invalid' })
+	}
+
+	const user = await User.findById(decodedToken.id)
+	if (!user) {
+		return response.status(401).json({ error: 'user invalid' })
+	}
+
+	request.user = user
 	next()
 }
 
