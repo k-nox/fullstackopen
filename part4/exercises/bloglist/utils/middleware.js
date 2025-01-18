@@ -25,6 +25,14 @@ export const logMiddleware = morgan((tokens, request, response) => {
 	return t.join(' ')
 })
 
+export const tokenExtractor = (request, _response, next) => {
+	const auth = request.get('authorization')
+	if (auth && auth.startsWith('Bearer ')) {
+		request.token = auth.replace('Bearer ', '')
+	}
+	next()
+}
+
 export const errorHandler = (error, _request, response, next) => {
 	logger.error(error.message)
 
@@ -40,6 +48,8 @@ export const errorHandler = (error, _request, response, next) => {
 					.json({ error: 'expected `username` to be unique' })
 			}
 			break
+		case 'JsonWebTokenError':
+			return response.status(401).json({ error: 'invalid token' })
 	}
 	next(error)
 }
