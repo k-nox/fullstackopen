@@ -3,6 +3,7 @@ import express, { json } from 'express'
 import mongoose, { connect } from 'mongoose'
 import 'express-async-errors'
 import { blogRouter } from './controllers/blogs.js'
+import { userRouter } from './controllers/users.js'
 import { logger } from './utils/logger.js'
 import { errorHandler, logMiddleware } from './utils/middleware.js'
 
@@ -16,6 +17,7 @@ export const app = (mongoURI) => {
 		a.use(logMiddleware)
 	}
 	a.use('/api/blogs', blogRouter)
+	a.use('/api/users', userRouter)
 	a.use(errorHandler)
 	return a
 }

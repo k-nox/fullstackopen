@@ -1,11 +1,11 @@
 @baseURL=http://localhost:3003
 @id=678ac6999f68fc9d684d2f66
 
-# Get all blog 
+# @name get_blogs
 GET {{baseURL}}/api/blogs
 
 ###
-# Create blog
+# @name create_blog
 POST {{baseURL}}/api/blogs
 Content-Type: application/json
 
@@ -17,11 +17,11 @@ Content-Type: application/json
 }
 
 ###
-# Delete a blog
+# @name delete_blog
 DELETE {{baseURL}}/api/blogs/{{id}}
 
 ###
-# Update a blog
+# @name update_blog
 PUT {{baseURL}}/api/blogs/{{id}}
 Content-Type: application/json
 
@@ -31,3 +31,19 @@ Content-Type: application/json
 	"url": "http://knox-also.example.com",
 	"likes": 1000
 }
+
+###
+# @name get_users
+GET {{baseURL}}/api/users
+
+###
+# @name create_user
+POST {{baseURL}}/api/users
+Content-Type: application/json
+
+{
+	"username": "knox13",
+	"name": "Knox",
+	"password": "supersecret"
+}
+
