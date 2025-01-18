@@ -11,6 +11,8 @@ import {
 	initialNotes,
 	nonExistingId,
 	notesInDb,
+	token,
+	userById,
 	usersInDb,
 } from './test_helper.js'
 
@@ -94,20 +96,26 @@ describe('notes api', () => {
 		describe('addition of a new note', () => {
 			test('succeeds with valid data', async () => {
 				const users = await usersInDb()
+				const user = users[0]
+				const notesAtStart = user.notes
 				const newNote = {
 					content: 'async/await simplifies making async calls',
 					important: true,
-					userId: users[0].id,
 				}
 
-				await api
+				const response = await api
 					.post('/api/notes')
+					.auth(token(user), { type: 'bearer' })
 					.send(newNote)
 					.expect(201)
 					.expect('Content-Type', /application\/json/)
 
 				const notesAtEnd = await notesInDb()
 				assert.strictEqual(notesAtEnd.length, initialNotes.length + 1)
+				assert.strictEqual(response.body.user, user.id)
+
+				const updatedUser = await userById(user.id)
+				assert.strictEqual(updatedUser.notes.length, notesAtStart.length + 1)
 
 				const contents = notesAtEnd.map((n) => n.content)
 				assert(contents.includes('async/await simplifies making async calls'))
@@ -115,24 +123,32 @@ describe('notes api', () => {
 
 			test('fails with 400 if data is invalid', async () => {
 				const users = await usersInDb()
+				const user = users[0]
+				const notesAtStart = user.notes
 				const newNote = {
 					important: true,
-					userId: users[0].id,
 				}
 
-				await api.post('/api/notes').send(newNote).expect(400)
+				await api
+					.post('/api/notes')
+					.send(newNote)
+					.auth(token(user), { type: 'bearer' })
+					.expect(400)
 
 				const notesAtEnd = await notesInDb()
 				assert.strictEqual(notesAtEnd.length, initialNotes.length)
+
+				const userAtEnd = await userById(user.id)
+				assert.strictEqual(userAtEnd.notes.length, notesAtStart.length)
 			})
 
-			test('fails with 400 if missing userId', async () => {
+			test('fails with 401 if missing a valid token', async () => {
 				const newNote = {
 					content: 'this is a note',
 					important: true,
 				}
 
-				await api.post('/api/notes').send(newNote).expect(400)
+				await api.post('/api/notes').send(newNote).expect(401)
 
 				const notesAtEnd = await notesInDb()
 				assert.strictEqual(notesAtEnd.length, initialNotes.length)

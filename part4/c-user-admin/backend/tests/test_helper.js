@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken'
 import Note from '../models/note.js'
 import User from '../models/user.js'
 
@@ -28,4 +29,12 @@ export const notesInDb = async () => {
 export const usersInDb = async () => {
 	const users = await User.find({})
 	return users.map((user) => user.toJSON())
+}
+
+export const token = ({ username, id }) => {
+	return jwt.sign({ username, id }, process.env.SECRET)
+}
+
+export const userById = async (id) => {
+	return await User.findById(id)
 }
