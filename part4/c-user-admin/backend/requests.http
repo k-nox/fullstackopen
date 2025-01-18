@@ -52,3 +52,13 @@ Content-Type: application/json
 	"name": "knox",
 	"password": "fakepassword"
 }
+
+###
+# Login
+POST {{baseUrl}}/api/login
+Content-Type: application/json
+
+{
+	"username": "knox13",
+	"password": "fakepassword"
+}

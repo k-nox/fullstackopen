@@ -2,6 +2,7 @@ import cors from 'cors'
 import express from 'express'
 import mongoose from 'mongoose'
 import 'express-async-errors'
+import loginRouter from './controllers/login.js'
 import notesRouter from './controllers/notes.js'
 import usersRouter from './controllers/users.js'
 import config from './utils/config.js'
@@ -28,6 +29,7 @@ export const app = (mongoURI) => {
 
 	a.use('/api/notes', notesRouter)
 	a.use('/api/users', usersRouter)
+	a.use('/api/login', loginRouter)
 
 	a.use(middleware.unknownEndpoint)
 	a.use(middleware.errorHandler)
