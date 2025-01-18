@@ -1,0 +1,2 @@
+name: get one note
+url: http://localhost:3001/api/notes/67896125b651eae7da0c85ca

@@ -1,0 +1,3 @@
+name: delete one note
+method: DELETE
+url: http://localhost:3001/api/notes/678965e8b651eae7da0c85ca

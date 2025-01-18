@@ -1,0 +1,13 @@
+name: update note
+method: PUT
+url: http://localhost:3001/api/notes/67896125b651eae7da0c85c8
+body:
+  content: |-
+    {
+      "content": "this is a note",
+      "important": true
+    }
+  content_type: application/json
+headers:
+- name: content-type
+  value: application/json

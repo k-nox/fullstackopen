@@ -1,0 +1,61 @@
+@baseUrl=http://localhost:3001
+@noteid=678ae795222a645e5fa5dff0
+@userid=678adebb64cd520a73b90141
+
+###
+# @name get_notes
+GET {{baseUrl}}/api/notes
+
+###
+# @name get_note
+GET {{baseUrl}}/api/notes/{{noteid}}
+
+###
+# @name delete_note
+DELETE {{baseUrl}}/api/notes/{{noteid}}
+
+###
+# @name create_note
+POST {{baseUrl}}/api/notes
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.$.token}}
+
+{
+	"content": "i can make notes!",
+	"important": true
+}
+
+###
+# @name update_note
+PUT {{baseUrl}}/api/notes/{{id}}
+Content-Type: application/json
+
+{
+	"content": "lol",
+	"important": false
+}
+
+###
+# @name get_users
+GET {{baseUrl}}/api/users
+
+###
+# @name create_user
+POST {{baseUrl}}/api/users
+Content-Type: application/json
+
+{
+	"username": "knox131313",
+	"name": "knox",
+	"password": "fakepassword"
+}
+
+###
+# @name login
+POST {{baseUrl}}/api/login
+Content-Type: application/json
+
+{
+	"username": "knox13",
+	"password": "fakepassword"
+}
