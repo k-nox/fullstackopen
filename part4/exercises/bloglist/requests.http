@@ -47,3 +47,13 @@ Content-Type: application/json
 	"password": "supersecret"
 }
 
+###
+# @name login
+POST {{baseURL}}/api/login
+Content-Type: application/json
+
+{
+	"username": "knox13",
+	"password": "supersecret"
+}
+

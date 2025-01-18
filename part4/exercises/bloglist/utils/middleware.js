@@ -2,7 +2,11 @@ import morgan from 'morgan'
 import { logger } from './logger.js'
 
 morgan.token('body', (request) => {
-	return JSON.stringify(request.body)
+	const body = { ...request.body }
+	if (Object.hasOwn(body, 'password')) {
+		delete body.password
+	}
+	return JSON.stringify(body)
 })
 
 export const logMiddleware = morgan((tokens, request, response) => {
