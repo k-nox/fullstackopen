@@ -1,8 +1,8 @@
-import Note from './components/Note';
-import { useState, useEffect } from 'react';
-import noteService from './services/notes';
-import Notification from './components/Notification';
+import { useEffect, useState } from 'react';
 import Footer from './components/Footer';
+import Note from './components/Note';
+import Notification from './components/Notification';
+import noteService from './services/notes';
 
 const App = () => {
 	const [notes, setNotes] = useState([]);
