@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react'
 import { Blog } from './components/Blog'
 import { CreateBlogForm } from './components/CreateBlogForm'
 import { Login } from './components/Login'
+import { Notification } from './components/Notification'
 import { createBlog, getAllBlogs } from './services/blogs'
 import { login } from './services/login'
+import './app.css'
 
 function App() {
 	const [blogs, setBlogs] = useState([])
@@ -13,6 +15,7 @@ function App() {
 	const [title, setTitle] = useState('')
 	const [author, setAuthor] = useState('')
 	const [url, setUrl] = useState('')
+	const [notification, setNotification] = useState(null)
 
 	useEffect(() => {
 		const fetchBlogs = async () => {
@@ -38,8 +41,17 @@ function App() {
 			window.localStorage.setItem('loggedInUser', JSON.stringify(user))
 			setUsername('')
 			setPassword('')
+			setNotification({
+				message: `${user.name} successfully logged in`,
+				type: 'success',
+			})
+			setTimeout(() => setNotification(null), 5000)
 		} catch (exception) {
-			console.log(exception)
+			setNotification({
+				message: 'wrong username or password',
+				type: 'error',
+			})
+			setTimeout(() => setNotification(null), 5000)
 		}
 	}
 
@@ -53,24 +65,36 @@ function App() {
 
 	const handleCreateBlog = async (e) => {
 		e.preventDefault()
-		const newBlog = await createBlog(
-			{
-				title: title,
-				author: author,
-				url: url,
-			},
-			user.token,
-		)
+		try {
+			const newBlog = await createBlog(
+				{
+					title: title,
+					author: author,
+					url: url,
+				},
+				user.token,
+			)
 
-		setBlogs([...blogs, newBlog])
-		setTitle('')
-		setAuthor('')
-		setUrl('')
+			setBlogs([...blogs, newBlog])
+			setTitle('')
+			setAuthor('')
+			setUrl('')
+			setNotification({
+				message: `added the blog ${newBlog.title} by ${newBlog.author}`,
+				type: 'success',
+			})
+			setTimeout(() => setNotification(null), 5000)
+		} catch (exception) {
+			setNotification({
+				message: exception.response.data.error,
+				type: 'error',
+			})
+			setTimeout(() => setNotification(null), 5000)
+		}
 	}
 
 	const loggedInView = () => (
 		<div>
-			<h2>blogs</h2>
 			<p>
 				{user.name} logged in{' '}
 				<button type="button" onClick={handleLogout}>
@@ -95,7 +119,6 @@ function App() {
 
 	const loggedOutView = () => (
 		<div>
-			<h2>login to application</h2>
 			<Login
 				username={username}
 				onUsernameChange={({ target }) => setUsername(target.value)}
@@ -106,7 +129,15 @@ function App() {
 		</div>
 	)
 
-	return <div>{user === null ? loggedOutView() : loggedInView()}</div>
+	return (
+		<div>
+			<h2>{user === null ? 'blogs' : 'login to application'}</h2>
+			{notification && (
+				<Notification message={notification.message} type={notification.type} />
+			)}
+			{user === null ? loggedOutView() : loggedInView()}
+		</div>
+	)
 }
 
 export default App

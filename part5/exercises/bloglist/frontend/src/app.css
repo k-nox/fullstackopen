@@ -1,0 +1,76 @@
+body {
+	background: #232136;
+	color: #e0def4;
+}
+
+input {
+	background: #2a273f;
+	color: #e0def4;
+	border-radius: 99rem;
+	border-width: 2px;
+	border-style: solid;
+	border-color: #908caa;
+}
+
+.notification {
+	background: #393552;
+	font-size: 20px;
+	border-style: solid;
+	border-radius: 5px;
+	padding: 10px;
+	margin-bottom: 10px;
+}
+
+.success {
+	color: #9ccfd8;
+}
+
+.error {
+	color: #eb6f92;
+}
+
+button,
+button *,
+button :after,
+button :before,
+button:after,
+button:before {
+	border: 0 solid;
+	box-sizing: border-box;
+}
+button {
+	-webkit-tap-highlight-color: transparent;
+	-webkit-appearance: button;
+	background-color: #2a273f;
+	background-image: none;
+	color: #e0def4;
+	cursor: pointer;
+	font-size: 80%;
+	font-weight: 900;
+	line-height: 1.5;
+	margin: 0;
+	-webkit-mask-image: -webkit-radial-gradient(#000, #fff);
+	padding: 0;
+	text-transform: uppercase;
+}
+button:disabled {
+	cursor: default;
+}
+button:-moz-focusring {
+	outline: auto;
+}
+button svg {
+	display: block;
+	vertical-align: middle;
+}
+button [hidden] {
+	display: none;
+}
+button {
+	border-radius: 99rem;
+	border-width: 2px;
+	padding: 0.1rem 0.4rem;
+}
+button:hover {
+	color: #908caa;
+}
