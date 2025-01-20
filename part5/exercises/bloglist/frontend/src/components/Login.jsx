@@ -24,7 +24,7 @@ export const Login = ({
 						/>
 					</label>
 				</div>
-				<button type="submit">Login</button>
+				<button type="submit">login</button>
 			</form>
 		</div>
 	)
