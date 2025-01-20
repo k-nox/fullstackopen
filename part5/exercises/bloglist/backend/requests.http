@@ -11,9 +11,9 @@ Content-Type: application/json
 Authorization: Bearer {{login.response.body.$.token}}
 
 {
-	"title": "Knox's Cool Blog",
+	"title": "Knox's Cool Blog 2: Electric Boogaloo",
 	"author": "Knox",
-	"url": "http://knox.example.com",
+	"url": "http://knox-also.example.com",
 	"likes": 1
 }
 
