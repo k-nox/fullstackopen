@@ -10,13 +10,9 @@ import noteService from './services/notes';
 
 const App = () => {
 	const [notes, setNotes] = useState([]);
-	const [newNote, setNewNote] = useState('');
 	const [showAll, setShowAll] = useState(true);
 	const [errorMessage, setErrorMessage] = useState(null);
-	const [username, setUsername] = useState('');
-	const [password, setPassword] = useState('');
 	const [user, setUser] = useState(null);
-	const [loginVisible, setLoginVisible] = useState(false);
 
 	useEffect(() => {
 		noteService.getAll().then((initialNotes) => setNotes(initialNotes));
@@ -56,26 +52,16 @@ const App = () => {
 		setNotes(notes.concat(newNote));
 	};
 
-	const handleNoteChange = (event) => {
-		setNewNote(event.target.value);
-	};
-
 	const notesToShow = showAll ? notes : notes.filter((note) => note.important);
 
-	const handleLogin = async (event) => {
-		event.preventDefault();
+	const handleLogin = async (userObject) => {
 		try {
-			const user = await loginService.login({
-				username,
-				password,
-			});
+			const user = await loginService.login(userObject);
 
 			window.localStorage.setItem('loggedInNoteAppUser', JSON.stringify(user));
 
 			noteService.setToken(user.token);
 			setUser(user);
-			setUsername('');
-			setPassword('');
 		} catch (exception) {
 			setErrorMessage('Wrong credentials');
 			setTimeout(() => {
@@ -93,13 +79,7 @@ const App = () => {
 	const loginForm = () => {
 		return (
 			<Toggleable buttonLabel="login">
-				<LoginForm
-					username={username}
-					password={password}
-					handleUsernameChange={({ target }) => setUsername(target.value)}
-					handlePasswordChange={({ target }) => setPassword(target.value)}
-					handleSubmit={handleLogin}
-				/>
+				<LoginForm login={handleLogin} />
 			</Toggleable>
 		);
 	};
