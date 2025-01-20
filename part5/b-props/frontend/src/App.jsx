@@ -3,6 +3,7 @@ import Footer from './components/Footer';
 import LoginForm from './components/LoginForm';
 import Note from './components/Note';
 import Notification from './components/Notification';
+import Toggleable from './components/Toggleable';
 import loginService from './services/login';
 import noteService from './services/notes';
 
@@ -97,25 +98,16 @@ const App = () => {
 	};
 
 	const loginForm = () => {
-		const hideWhenVisible = { display: loginVisible ? 'none' : '' };
-		const showWhenVisible = { display: loginVisible ? '' : 'none' };
-
 		return (
-			<div>
-				<div style={hideWhenVisible}>
-					<button onClick={() => setLoginVisible(true)}>log in</button>
-				</div>
-				<div style={showWhenVisible}>
-					<LoginForm
-						username={username}
-						password={password}
-						handleUsernameChange={({ target }) => setUsername(target.value)}
-						handlePasswordChange={({ target }) => setPassword(target.value)}
-						handleSubmit={handleLogin}
-					/>
-					<button onClick={() => setLoginVisible(false)}>cancel</button>
-				</div>
-			</div>
+			<Toggleable buttonLabel="login">
+				<LoginForm
+					username={username}
+					password={password}
+					handleUsernameChange={({ target }) => setUsername(target.value)}
+					handlePasswordChange={({ target }) => setPassword(target.value)}
+					handleSubmit={handleLogin}
+				/>
+			</Toggleable>
 		);
 	};
 
