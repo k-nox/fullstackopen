@@ -51,17 +51,9 @@ const App = () => {
 			});
 	};
 
-	const addNote = (event) => {
-		event.preventDefault();
-		const noteObject = {
-			content: newNote,
-			important: Math.random() < 0.5,
-		};
-
-		noteService.create(noteObject).then((returnedNote) => {
-			setNotes([...notes, returnedNote]);
-			setNewNote('');
-		});
+	const addNote = async (noteObject) => {
+		const newNote = await noteService.create(noteObject);
+		setNotes(notes.concat(newNote));
 	};
 
 	const handleNoteChange = (event) => {
@@ -118,11 +110,7 @@ const App = () => {
 				logout
 			</button>
 			<Toggleable buttonLabel="new note">
-				<NoteForm
-					onSubmit={addNote}
-					value={newNote}
-					handleChange={handleNoteChange}
-				/>
+				<NoteForm createNote={addNote} />
 			</Toggleable>
 		</div>
 	);
