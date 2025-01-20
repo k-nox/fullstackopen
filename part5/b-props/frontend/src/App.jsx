@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Footer from './components/Footer';
 import LoginForm from './components/LoginForm';
 import Note from './components/Note';
+import { NoteForm } from './components/NoteForm';
 import Notification from './components/Notification';
 import Toggleable from './components/Toggleable';
 import loginService from './services/login';
@@ -116,10 +117,13 @@ const App = () => {
 			<button type="button" onClick={handleLogout}>
 				logout
 			</button>
-			<form onSubmit={addNote}>
-				<input value={newNote} onChange={handleNoteChange} />
-				<button type="submit">save</button>
-			</form>
+			<Toggleable buttonLabel="new note">
+				<NoteForm
+					onSubmit={addNote}
+					value={newNote}
+					handleChange={handleNoteChange}
+				/>
+			</Toggleable>
 		</div>
 	);
 
