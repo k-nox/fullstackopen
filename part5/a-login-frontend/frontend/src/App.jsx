@@ -88,6 +88,12 @@ const App = () => {
 		}
 	};
 
+	const handleLogout = () => {
+		window.localStorage.removeItem('loggedInNoteAppUser');
+		noteService.setToken(null);
+		setUser(null);
+	};
+
 	const loginForm = () => (
 		<form onSubmit={handleLogin}>
 			<div>
@@ -113,10 +119,15 @@ const App = () => {
 	);
 
 	const noteForm = () => (
-		<form onSubmit={addNote}>
-			<input value={newNote} onChange={handleNoteChange} />
-			<button type="submit">save</button>
-		</form>
+		<div>
+			<button type="button" onClick={handleLogout}>
+				logout
+			</button>
+			<form onSubmit={addNote}>
+				<input value={newNote} onChange={handleNoteChange} />
+				<button type="submit">save</button>
+			</form>
+		</div>
 	);
 
 	return (
