@@ -29,6 +29,10 @@ input {
 	color: #eb6f92;
 }
 
+.hide {
+	display: none;
+}
+
 button,
 button *,
 button :after,

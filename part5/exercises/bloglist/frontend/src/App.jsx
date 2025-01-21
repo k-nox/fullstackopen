@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Blog } from './components/Blog'
 import { CreateBlogForm } from './components/CreateBlogForm'
-import { Login } from './components/Login'
+import { LoginForm } from './components/LoginForm'
 import { Notification } from './components/Notification'
 import { createBlog, getAllBlogs } from './services/blogs'
 import { login } from './services/login'
 import './app.css'
+import { Toggleable } from './components/Toggleable'
 
 function App() {
 	const [blogs, setBlogs] = useState([])
@@ -16,6 +17,8 @@ function App() {
 	const [author, setAuthor] = useState('')
 	const [url, setUrl] = useState('')
 	const [notification, setNotification] = useState(null)
+
+	const blogFormRef = useRef()
 
 	useEffect(() => {
 		const fetchBlogs = async () => {
@@ -65,6 +68,7 @@ function App() {
 
 	const handleCreateBlog = async (e) => {
 		e.preventDefault()
+		blogFormRef.current.toggleVisibility()
 		try {
 			const newBlog = await createBlog(
 				{
@@ -101,16 +105,18 @@ function App() {
 					logout
 				</button>
 			</p>
-			<h3>create new</h3>
-			<CreateBlogForm
-				title={title}
-				onTitleChange={({ target }) => setTitle(target.value)}
-				author={author}
-				onAuthorChange={({ target }) => setAuthor(target.value)}
-				url={url}
-				onUrlChange={({ target }) => setUrl(target.value)}
-				onSubmit={handleCreateBlog}
-			/>
+			<Toggleable showLabel="new note" cancelLabel="cancel" ref={blogFormRef}>
+				<h3>create new</h3>
+				<CreateBlogForm
+					title={title}
+					onTitleChange={({ target }) => setTitle(target.value)}
+					author={author}
+					onAuthorChange={({ target }) => setAuthor(target.value)}
+					url={url}
+					onUrlChange={({ target }) => setUrl(target.value)}
+					onSubmit={handleCreateBlog}
+				/>
+			</Toggleable>
 			{blogs.map((blog) => (
 				<Blog key={blog.id} blog={blog} />
 			))}
@@ -119,7 +125,7 @@ function App() {
 
 	const loggedOutView = () => (
 		<div>
-			<Login
+			<LoginForm
 				username={username}
 				onUsernameChange={({ target }) => setUsername(target.value)}
 				password={password}
